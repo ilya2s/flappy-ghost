@@ -1,16 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
-
 <?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="ca.umontreal.iro.fg.Controller">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-    </padding>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.shape.Circle?>
 
-    <Label fx:id="welcomeText"/>
-    <Button text="Hello!" onAction="#onHelloButtonClick"/>
-</VBox>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="440.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.umontreal.iro.fg.Controller">
+   <bottom>
+      <HBox alignment="CENTER" prefHeight="40.0" prefWidth="640.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="pause" mnemonicParsing="false" onAction="#pauseButtonCLicked" text="Pause" />
+            <Separator orientation="VERTICAL" prefHeight="200.0">
+               <padding>
+                  <Insets left="20.0" right="20.0" />
+               </padding>
+            </Separator>
+            <CheckBox fx:id="debug" mnemonicParsing="false" onAction="#debugBoxChecked" text="Mode debug" />
+            <Separator orientation="VERTICAL" prefHeight="200.0">
+               <padding>
+                  <Insets left="20.0" right="20.0" />
+               </padding>
+            </Separator>
+            <Label fx:id="score" text="Score: 0" />
+         </children>
+      </HBox>
+   </bottom>
+   <center>
+      <AnchorPane fx:id="gamePane" prefHeight="400.0" prefWidth="640.0" BorderPane.alignment="CENTER">
+         <children>
+            <Circle fx:id="ghost" fill="DODGERBLUE" layoutX="320.0" layoutY="200.0" radius="30.0" stroke="BLACK" strokeType="INSIDE" />
+         </children>
+      </AnchorPane>
+   </center>
+</BorderPane>

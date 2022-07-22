@@ -13,4 +13,6 @@ module ca.umontreal.iro.fg {
 
     opens ca.umontreal.iro.fg to javafx.fxml;
     exports ca.umontreal.iro.fg;
+    exports ca.umontreal.iro.fg.obstacles;
+    opens ca.umontreal.iro.fg.obstacles to javafx.fxml;
 }
