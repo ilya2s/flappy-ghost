@@ -6,10 +6,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-public class Obstacle {
+public abstract class Obstacle implements Avoidable {
     public static final int MIN_RADIUS = 10;
     public static final int MAX_RADIUS = 45;
-    public static final int OBSTACLES_COUNT = 26;
+    public static final int OBSTACLES_COUNT = 27;
 
     private final Circle shape;
     private final Image image;
@@ -21,12 +21,12 @@ public class Obstacle {
 
     public Obstacle() {
         radius = Math.random() * (MAX_RADIUS - MIN_RADIUS) + MIN_RADIUS;
-        // x = FlappyGhost.WIDTH + radius;
-        x = ((double) FlappyGhost.WIDTH / 2);
+         // x = FlappyGhost.WIDTH + radius;
+         x = ((double) FlappyGhost.WIDTH / 2);
         passed = false;
         shape = new Circle(x, y, radius, Color.YELLOW);
 
-        int obstacleNumber = (int) (Math.random() * OBSTACLES_COUNT + 1);
+        int obstacleNumber = (int) (Math.random() * OBSTACLES_COUNT);
         image = new Image(String.valueOf(FlappyGhost.class.getResource("assets/obstacles/"
                 + obstacleNumber + ".png")));
         imageView = new ImageView(image);
@@ -66,13 +66,13 @@ public class Obstacle {
         return passed;
     }
 
-    public void setX(int x) {
+    public void setX(double x) {
         this.x = x;
         shape.setCenterX(x);
         imageView.setX(x - radius);
     }
 
-    public void setY(int y) {
+    public void setY(double y) {
         this.y = y;
         shape.setCenterY(y);
         imageView.setY(y - radius);
