@@ -38,6 +38,7 @@ public interface CollisionHandler {
             double moveX = directionX * overlap / 2;
             double moveY = directionY * overlap / 2;
 
+            // force move elements away from eachother
             ghost.setX(ghost.getX() + moveX);
             ghost.setY(ghost.getY() + moveY);
             other.setX(other.getX() - moveX);

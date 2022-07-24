@@ -48,25 +48,30 @@ public class Ghost implements Debugable {
     }
 
     public void update(double dt) {
-        sx += dt * 0;
+        sx += dt * AX;
         sy += dt * AY;
 
         double nextX = x + dt * sx;
         double nextY = y + dt * sy;
 
-        if (nextX + RADIUS > FlappyGhost.WIDTH
-                || nextX - RADIUS < 0) {
-            sx *= -0.9;
+        if (nextX + RADIUS > FlappyGhost.WIDTH || nextX - RADIUS < 0) {
+            sx *= -1;
         } else {
             setX(nextX);
         }
 
-        if (nextY + RADIUS > FlappyGhost.GAME_HEIGHT
-                || nextY - RADIUS < 0) {
-            sy *= -0.9;
+        if (nextY + RADIUS > FlappyGhost.GAME_HEIGHT || nextY - RADIUS < 0) {
+            sy *= -1;
         } else {
             setY(nextY);
         }
+
+        // Force x and y to be inside borders of game
+        setX(Math.min(x, FlappyGhost.WIDTH - RADIUS));
+        setX(Math.max(x, RADIUS));
+
+        setY(Math.min(y, FlappyGhost.GAME_HEIGHT - RADIUS));
+        setY(Math.max(y, RADIUS));
     }
 
     public Circle getShape() {

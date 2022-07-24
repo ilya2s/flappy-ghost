@@ -12,13 +12,13 @@ public abstract class Obstacle implements Debugable {
     public static final int MAX_RADIUS = 45;
     public static final int OBSTACLES_COUNT = 27;
 
-    private final Circle shape;
-    private final Image image;
-    private ImageView imageView;
-    private final double radius;
-    private double x;
-    private double y;
-    private boolean passed;
+    protected final Circle shape;
+    protected final Image image;
+    protected ImageView imageView;
+    protected final double radius;
+    protected double x;
+    protected double y;
+    protected boolean passed;
 
     public Obstacle() {
         radius = Math.random() * (MAX_RADIUS - MIN_RADIUS) + MIN_RADIUS;
@@ -38,6 +38,18 @@ public abstract class Obstacle implements Debugable {
         imageView.setFitWidth(radius * 2);
         imageView.setFitHeight(radius * 2);
     }
+
+    public void startDebug() {
+        imageView = new ImageView();
+        shape.setFill(Color.GREEN);
+    }
+
+    public void stopDebug() {
+        imageView = new ImageView(image);
+        shape.setFill(null);
+    }
+
+    public abstract void move();
 
     public Circle getShape() {
         return shape;
@@ -82,16 +94,4 @@ public abstract class Obstacle implements Debugable {
     public void setPassed(boolean passed) {
         this.passed = passed;
     }
-
-    public void startDebug() {
-        imageView = new ImageView();
-        shape.setFill(Color.GREEN);
-    }
-
-    public void stopDebug() {
-        imageView = new ImageView(image);
-        shape.setFill(null);
-    }
-
-    public abstract void move();
 }

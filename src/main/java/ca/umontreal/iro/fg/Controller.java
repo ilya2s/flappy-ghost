@@ -12,8 +12,7 @@ import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
 
-    private Ghost ghost1;
-    private Ghost ghost2;
+    private Ghost[] ghosts;
 
     @FXML
     private Pane gamePane;
@@ -49,16 +48,47 @@ public class Controller implements Initializable {
     }
 
     public void load() {
+        ghosts = new Ghost[10];
+
+        for (int i = 0; i < ghosts.length; i++) {
+            ghosts[i] = new Ghost();
+            ghosts[i].setX(Math.random() * FlappyGhost.WIDTH);
+            ghosts[i].setY(Math.random() * FlappyGhost.GAME_HEIGHT);
+
+            gamePane.getChildren().add(ghosts[i].getShape());
+            gamePane.getChildren().add(ghosts[i].getImageView());
+
+        }
+
+        /*
         ghost1 = new Ghost();
         gamePane.getChildren().add(ghost1.getImageView());
 
         ghost2 = new Ghost();
         ghost2.setX(ghost1.getX() + Ghost.RADIUS * 4);
+        ghost2.setY(ghost1.getY() + Ghost.RADIUS * 4);
         gamePane.getChildren().add(ghost2.getImageView());
+         */
     }
 
     public void updatePane(double dt) {
 
+        gamePane.getChildren().clear();
+
+        for (int i = 0; i < ghosts.length; i++) {
+            Ghost ghost = ghosts[i];
+            ghost.update(dt);
+
+            for (int j = i + 1; j < ghosts.length; j++) {
+                Ghost other = ghosts[j];
+                CollisionHandler.handle(ghost, other);
+            }
+
+            gamePane.getChildren().add(ghost.getShape());
+            gamePane.getChildren().add(ghost.getImageView());
+        }
+
+        /*
         ghost1.update(dt);
         ghost2.update(dt);
 
@@ -69,6 +99,7 @@ public class Controller implements Initializable {
         gamePane.getChildren().add(ghost1.getImageView());
         gamePane.getChildren().add(ghost2.getShape());
         gamePane.getChildren().add(ghost2.getImageView());
+         */
     }
 
     @FXML
@@ -81,12 +112,24 @@ public class Controller implements Initializable {
         gamePane.requestFocus();
 
         if (debugBox.isSelected()) {
+            for (Ghost ghost : ghosts) {
+                ghost.startDebug();
+            }
+        } else {
+            for (Ghost ghost : ghosts) {
+                ghost.stopDebug();
+            }
+        }
+
+        /*
+        if (debugBox.isSelected()) {
             ghost1.startDebug();
             ghost2.startDebug();
         } else {
             ghost1.stopDebug();
             ghost2.stopDebug();
         }
+         */
     }
 
 }
