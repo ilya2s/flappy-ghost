@@ -20,6 +20,29 @@ public interface CollisionHandler {
 
             other.setSx(sx);
             other.setSy(sy);
+
+            // Overlaping distance between the center of the two elements
+            double dx = other.getX() - ghost.getX();
+            double dy = other.getY() - ghost.getY();
+            double d2 = dx * dx + dy * dy;
+            double d = Math.sqrt(d2);
+
+            // Overlap in pixels
+            double overlap = d - (Ghost.RADIUS + Ghost.RADIUS);
+
+            // Direction of movement
+            double directionX = dx / d;
+            double directionY = dy / d;
+
+            // movement
+            double moveX = directionX * overlap / 2;
+            double moveY = directionY * overlap / 2;
+
+            ghost.setX(ghost.getX() + moveX);
+            ghost.setY(ghost.getY() + moveY);
+            other.setX(other.getX() - moveX);
+            other.setY(other.getY() - moveY);
+
         }
     }
 }
