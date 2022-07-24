@@ -12,7 +12,9 @@ import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
 
-    private Ghost ghost;
+    private Ghost ghost1;
+    private Ghost ghost2;
+
     @FXML
     private Pane gamePane;
     @FXML
@@ -24,8 +26,6 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // deltaTime * speedX = deltaX
-        //ghost.setY(ghost.getY() + deltaTime * ghost.getSpeed()); // deltaTime * speedY = deltaY
         AnimationTimer timer = new AnimationTimer() {
             private long lastTime;
 
@@ -33,51 +33,42 @@ public class Controller implements Initializable {
             public void start() {
                 lastTime = System.nanoTime();
                 super.start();
+                load();
             }
 
             @Override
             public void handle(long now) {
                 double deltaTime = (now - lastTime) * 1e-9;
 
-                ghost.setxSpeed(ghost.getxSpeed() + deltaTime * 0);
-                ghost.setySpeed(ghost.getySpeed() + deltaTime * Ghost.AY);
-
-                double nextX = ghost.getX() + deltaTime * ghost.getxSpeed(); // deltaTime * speedX = deltaX
-                double nextY = ghost.getY() + deltaTime * ghost.getySpeed(); // deltaTime * speedY = deltaY
-
-                if (nextX + Ghost.RADIUS > FlappyGhost.WIDTH
-                        || nextX - Ghost.RADIUS < 0) {
-                    ghost.setxSpeed(ghost.getxSpeed() * -0.9);
-                } else {
-                    ghost.setX(nextX);
-                }
-
-                if (nextY + Ghost.RADIUS > FlappyGhost.GAME_HEIGHT
-                        || nextY - Ghost.RADIUS < 0) {
-                    ghost.setySpeed(ghost.getySpeed() * -0.9);
-                } else {
-                    ghost.setY(nextY);
-                }
-
-                updatePane();
+                updatePane(deltaTime);
 
                 lastTime = now;
             }
         };
-
-        load();
         timer.start();
     }
 
     public void load() {
-        ghost = new Ghost();
-        gamePane.getChildren().add(ghost.getImageView());
+        ghost1 = new Ghost();
+        gamePane.getChildren().add(ghost1.getImageView());
+
+        ghost2 = new Ghost();
+        ghost2.setX(ghost1.getX() + Ghost.RADIUS * 4);
+        gamePane.getChildren().add(ghost2.getImageView());
     }
 
-    public void updatePane() {
+    public void updatePane(double dt) {
+
+        ghost1.update(dt);
+        ghost2.update(dt);
+
+        CollisionHandler.handle(ghost1, ghost2);
+
         gamePane.getChildren().clear();
-        gamePane.getChildren().add(ghost.getShape());
-        gamePane.getChildren().add(ghost.getImageView());
+        gamePane.getChildren().add(ghost1.getShape());
+        gamePane.getChildren().add(ghost1.getImageView());
+        gamePane.getChildren().add(ghost2.getShape());
+        gamePane.getChildren().add(ghost2.getImageView());
     }
 
     @FXML
@@ -90,9 +81,11 @@ public class Controller implements Initializable {
         gamePane.requestFocus();
 
         if (debugBox.isSelected()) {
-            ghost.startDebug();
+            ghost1.startDebug();
+            ghost2.startDebug();
         } else {
-            ghost.stopDebug();
+            ghost1.stopDebug();
+            ghost2.stopDebug();
         }
     }
 
