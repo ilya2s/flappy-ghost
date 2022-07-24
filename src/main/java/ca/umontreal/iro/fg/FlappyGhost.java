@@ -5,14 +5,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
 public class FlappyGhost extends Application {
 
-    public static final int WIDTH = 640;
-    public static final int STAGE_HEIGHT = 440;
-    public static final int GAME_HEIGHT = 400;
+    public static final double WIDTH = 640;
+    public static final double STAGE_HEIGHT = 440;
+    public static final double GAME_HEIGHT = 400;
 
     @Override
     public void start(Stage stage) throws IOException {

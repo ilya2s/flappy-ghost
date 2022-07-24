@@ -1,19 +1,20 @@
 package ca.umontreal.iro.fg.obstacles;
 
+import ca.umontreal.iro.fg.Debugable;
 import ca.umontreal.iro.fg.FlappyGhost;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-public abstract class Obstacle implements Avoidable {
+public abstract class Obstacle implements Debugable {
     public static final int MIN_RADIUS = 10;
     public static final int MAX_RADIUS = 45;
     public static final int OBSTACLES_COUNT = 27;
 
     private final Circle shape;
     private final Image image;
-    private final ImageView imageView;
+    private ImageView imageView;
     private final double radius;
     private double x;
     private double y;
@@ -22,7 +23,7 @@ public abstract class Obstacle implements Avoidable {
     public Obstacle() {
         radius = Math.random() * (MAX_RADIUS - MIN_RADIUS) + MIN_RADIUS;
          // x = FlappyGhost.WIDTH + radius;
-         x = ((double) FlappyGhost.WIDTH / 2);
+         x = FlappyGhost.WIDTH / 2;
         passed = false;
         shape = new Circle(x, y, radius, Color.YELLOW);
 
@@ -82,4 +83,15 @@ public abstract class Obstacle implements Avoidable {
         this.passed = passed;
     }
 
+    public void startDebug() {
+        imageView = new ImageView();
+        shape.setFill(Color.GREEN);
+    }
+
+    public void stopDebug() {
+        imageView = new ImageView(image);
+        shape.setFill(null);
+    }
+
+    public abstract void move();
 }
