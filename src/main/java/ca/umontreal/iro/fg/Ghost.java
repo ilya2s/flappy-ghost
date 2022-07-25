@@ -11,7 +11,7 @@ public class Ghost implements Debugable {
     public static final double INIT_SPEED = 120;
     public static final double AX = 0;
     public static final double AY = 500;    // Gravity
-    public static final double JUMP_SPEED = 300;
+    public static final double JUMP_SPEED = -300;   // Negative value to go up
     public static final double MAX_Y_SPEED = 300;
     public static final Image IMAGE = new Image(String.valueOf(Ghost.class.getResource("assets/ghost.png")));
 
@@ -51,6 +51,10 @@ public class Ghost implements Debugable {
         sx += dt * AX;
         sy += dt * AY;
 
+        if (sy > MAX_Y_SPEED || sy < -MAX_Y_SPEED) {
+            sy = sy < 0 ? -MAX_Y_SPEED : MAX_Y_SPEED;
+        }
+
         double nextX = x + dt * sx;
         double nextY = y + dt * sy;
 
@@ -72,6 +76,10 @@ public class Ghost implements Debugable {
 
         setY(Math.min(y, FlappyGhost.GAME_HEIGHT - RADIUS));
         setY(Math.max(y, RADIUS));
+    }
+
+    public void jump() {
+        sy = JUMP_SPEED;
     }
 
     public Circle getShape() {

@@ -1,11 +1,14 @@
 package ca.umontreal.iro.fg;
 
 import javafx.animation.AnimationTimer;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -40,6 +43,9 @@ public class Controller implements Initializable {
                 double deltaTime = (now - lastTime) * 1e-9;
 
                 updatePane(deltaTime);
+                if (ghosts[0].getSy() > 300 || ghosts[0].getSy() < -300) {
+                    System.out.println("xSpeed : " + ghosts[0].getSx() + " | ySpeed : " + ghosts[0].getSy());
+                }
 
                 lastTime = now;
             }
@@ -48,7 +54,7 @@ public class Controller implements Initializable {
     }
 
     public void load() {
-        ghosts = new Ghost[10];
+        ghosts = new Ghost[1];
 
         for (int i = 0; i < ghosts.length; i++) {
             ghosts[i] = new Ghost();
@@ -130,6 +136,15 @@ public class Controller implements Initializable {
             ghost2.stopDebug();
         }
          */
+    }
+
+    @FXML
+    protected void spaceBarPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.SPACE) {
+            for (Ghost ghost : ghosts) {
+                ghost.jump();
+            }
+        }
     }
 
 }
