@@ -21,8 +21,8 @@ public class Ghost implements Debugable {
     private double sx, sy;  // speed
 
     public Ghost() {
-        x = RADIUS;
-        y = RADIUS;
+        x = FlappyGhost.WIDTH / 2;
+        y = FlappyGhost.GAME_HEIGHT / 2;
         this.shape = new Circle(x, y, RADIUS, null);
 
         imageView = new ImageView(IMAGE);
@@ -44,35 +44,28 @@ public class Ghost implements Debugable {
 
     public void stopDebug() {
         imageView = new ImageView(IMAGE);
+        imageView.setX(x - RADIUS);
         shape.setFill(null);
     }
 
+    public void pause() {
+
+    }
+
     public void update(double dt) {
-        sx += dt * AX;
         sy += dt * AY;
 
         // Set max Y speed
         if (sy > MAX_Y_SPEED) sy = MAX_Y_SPEED;
         if (sy < -MAX_Y_SPEED) sy = -MAX_Y_SPEED;
 
-        double nextX = x + dt * sx;
         double nextY = y + dt * sy;
-
-        if (nextX + RADIUS > FlappyGhost.WIDTH || nextX - RADIUS < 0) {
-            sx *= -1;
-        } else {
-            setX(nextX);
-        }
 
         if (nextY + RADIUS > FlappyGhost.GAME_HEIGHT || nextY - RADIUS < 0) {
             sy *= -1;
         } else {
             setY(nextY);
         }
-
-        // Force x and y to be inside Pane border
-        setX(Math.min(x, FlappyGhost.WIDTH - RADIUS));
-        setX(Math.max(x, RADIUS));
 
         setY(Math.min(y, FlappyGhost.GAME_HEIGHT - RADIUS));
         setY(Math.max(y, RADIUS));

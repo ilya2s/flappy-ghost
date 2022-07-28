@@ -10,14 +10,13 @@ import javafx.scene.shape.Circle;
 public abstract class Obstacle implements Debugable {
     public static final int MIN_RADIUS = 10;
     public static final int MAX_RADIUS = 45;
-    public static final int OBSTACLES_COUNT = 27;
+    public static final int OBSTACLES_COUNT = 26;
 
     protected final Circle shape;
     protected final Image image;
     protected ImageView imageView;
     protected final double radius;
-    protected double x;
-    protected double y;
+    protected double x, y;
     protected boolean passed;
 
     public Obstacle() {
@@ -25,7 +24,7 @@ public abstract class Obstacle implements Debugable {
          // x = FlappyGhost.WIDTH + radius;
          x = FlappyGhost.WIDTH / 2;
         passed = false;
-        shape = new Circle(x, y, radius, Color.YELLOW);
+        shape = new Circle(x, y, radius, null);
 
         int obstacleNumber = (int) (Math.random() * OBSTACLES_COUNT);
         image = new Image(String.valueOf(FlappyGhost.class.getResource("assets/obstacles/"

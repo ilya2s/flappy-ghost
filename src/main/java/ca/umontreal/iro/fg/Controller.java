@@ -1,6 +1,6 @@
 package ca.umontreal.iro.fg;
 
-import javafx.animation.AnimationTimer;
+import javafx.animation.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -9,17 +9,26 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
+import javafx.util.Duration;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
 
-    private Ghost[] ghosts;
+    private Background background1;
+    private Background background2;
+
+    private TranslateTransition trans1;
+    private TranslateTransition trans2;
+
+    private ParallelTransition parTrans;
+
+    private Ghost ghost;
 
     private AnimationTimer timer;
 
     private boolean pause;
-
     @FXML
     private Button pauseButton;
     @FXML
@@ -31,8 +40,9 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        timer = new AnimationTimer() {
+        timer = new AnimationTimer()  {
             private long lastTime;
+            private long animationStart;
 
             @Override
             public void start() {
@@ -50,63 +60,38 @@ public class Controller implements Initializable {
                 lastTime = now;
             }
         };
+
         timer.start();
+        parTrans.play();
     }
 
     public void load() {
         pause = false;
-        ghosts = new Ghost[1];
+        ghost = new Ghost();
+        background1 = new Background();
+        background2 = new Background();
 
-        for (int i = 0; i < ghosts.length; i++) {
-            ghosts[i] = new Ghost();
-            ghosts[i].setX(Math.random() * FlappyGhost.WIDTH);
-            ghosts[i].setY(Math.random() * FlappyGhost.GAME_HEIGHT);
+        trans1 = new TranslateTransition(Duration.seconds(FlappyGhost.WIDTH / ghost.getSx()), background1.getImageView());
+        trans1.setFromX(0);
+        trans1.setToX(-640);
+        trans1.setInterpolator(Interpolator.LINEAR);
+        trans1.setCycleCount(Animation.INDEFINITE);
 
-            gamePane.getChildren().add(ghosts[i].getShape());
-            gamePane.getChildren().add(ghosts[i].getImageView());
+        trans2 = new TranslateTransition(Duration.seconds(FlappyGhost.WIDTH / ghost.getSx()), background2.getImageView());
+        trans2.setFromX(640);
+        trans2.setToX(0);
+        trans2.setInterpolator(Interpolator.LINEAR);
+        trans2.setCycleCount(Animation.INDEFINITE);
 
-        }
+        parTrans = new ParallelTransition(trans1, trans2);
 
-        /*
-        ghost1 = new Ghost();
-        gamePane.getChildren().add(ghost1.getImageView());
-
-        ghost2 = new Ghost();
-        ghost2.setX(ghost1.getX() + Ghost.RADIUS * 4);
-        ghost2.setY(ghost1.getY() + Ghost.RADIUS * 4);
-        gamePane.getChildren().add(ghost2.getImageView());
-         */
+        gamePane.getChildren().addAll(background1.getImageView(), background2.getImageView(), ghost.getShape(), ghost.getImageView());
     }
 
     public void updatePane(double dt) {
-
         gamePane.getChildren().clear();
-
-        for (int i = 0; i < ghosts.length; i++) {
-            Ghost ghost = ghosts[i];
-            ghost.update(dt);
-
-            for (int j = i + 1; j < ghosts.length; j++) {
-                Ghost other = ghosts[j];
-                CollisionHandler.handle(ghost, other);
-            }
-
-            gamePane.getChildren().add(ghost.getShape());
-            gamePane.getChildren().add(ghost.getImageView());
-        }
-
-        /*
-        ghost1.update(dt);
-        ghost2.update(dt);
-
-        CollisionHandler.handle(ghost1, ghost2);
-
-        gamePane.getChildren().clear();
-        gamePane.getChildren().add(ghost1.getShape());
-        gamePane.getChildren().add(ghost1.getImageView());
-        gamePane.getChildren().add(ghost2.getShape());
-        gamePane.getChildren().add(ghost2.getImageView());
-         */
+        ghost.update(dt);
+        gamePane.getChildren().addAll(background1.getImageView(), background2.getImageView(), ghost.getShape(), ghost.getImageView());
     }
 
     @FXML
@@ -116,10 +101,12 @@ public class Controller implements Initializable {
         if (pause) {
             pauseButton.setText("Pause");
             timer.start();
+            parTrans.play();
             pause = false;
         } else {
             pauseButton.setText("Jouer");
             timer.stop();
+            parTrans.stop();
             pause = true;
         }
     }
@@ -129,33 +116,17 @@ public class Controller implements Initializable {
         gamePane.requestFocus();
 
         if (debugBox.isSelected()) {
-            for (Ghost ghost : ghosts) {
-                ghost.startDebug();
-            }
-        } else {
-            for (Ghost ghost : ghosts) {
-                ghost.stopDebug();
-            }
-        }
+            ghost.startDebug();
 
-        /*
-        if (debugBox.isSelected()) {
-            ghost1.startDebug();
-            ghost2.startDebug();
         } else {
-            ghost1.stopDebug();
-            ghost2.stopDebug();
+            ghost.stopDebug();
         }
-         */
     }
 
     @FXML
     protected void spaceBarPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.SPACE) {
-            for (Ghost ghost : ghosts) {
-                ghost.jump();
-            }
+            ghost.jump();
         }
     }
-
 }
