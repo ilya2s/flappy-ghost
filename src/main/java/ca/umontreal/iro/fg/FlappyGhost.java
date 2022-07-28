@@ -10,13 +10,13 @@ import java.io.IOException;
 public class FlappyGhost extends Application {
 
     public static final double WIDTH = 640;
-    public static final double STAGE_HEIGHT = 440;
+    public static final double HEIGHT = 440;
     public static final double GAME_HEIGHT = 400;
 
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(FlappyGhost.class.getResource("view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), WIDTH, STAGE_HEIGHT);
+        Scene scene = new Scene(fxmlLoader.load(), WIDTH, HEIGHT);
         scene.getRoot().requestFocus();
         stage.setTitle("Flappy Ghost");
         stage.setScene(scene);

@@ -1,10 +1,8 @@
 package ca.umontreal.iro.fg;
 
 import javafx.animation.AnimationTimer;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
@@ -17,10 +15,12 @@ public class Controller implements Initializable {
 
     private Ghost[] ghosts;
 
+    private AnimationTimer timer;
+
+    private boolean pause;
+
     @FXML
     private Pane gamePane;
-    @FXML
-    private Button pauseButton;
     @FXML
     private CheckBox debugBox;
     @FXML
@@ -28,7 +28,7 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        AnimationTimer timer = new AnimationTimer() {
+        timer = new AnimationTimer() {
             private long lastTime;
 
             @Override
@@ -54,6 +54,7 @@ public class Controller implements Initializable {
     }
 
     public void load() {
+        pause = false;
         ghosts = new Ghost[1];
 
         for (int i = 0; i < ghosts.length; i++) {
@@ -111,6 +112,14 @@ public class Controller implements Initializable {
     @FXML
     protected void pauseButtonCLicked() {
         gamePane.requestFocus();
+
+        if (pause) {
+            timer.start();
+            pause = false;
+        } else {
+            timer.stop();
+            pause = true;
+        }
     }
 
     @FXML

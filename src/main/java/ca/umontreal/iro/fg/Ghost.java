@@ -51,9 +51,9 @@ public class Ghost implements Debugable {
         sx += dt * AX;
         sy += dt * AY;
 
-        if (sy > MAX_Y_SPEED || sy < -MAX_Y_SPEED) {
-            sy = sy < 0 ? -MAX_Y_SPEED : MAX_Y_SPEED;
-        }
+        // Set max Y speed
+        if (sy > MAX_Y_SPEED) sy = MAX_Y_SPEED;
+        if (sy < -MAX_Y_SPEED) sy = -MAX_Y_SPEED;
 
         double nextX = x + dt * sx;
         double nextY = y + dt * sy;
@@ -70,7 +70,7 @@ public class Ghost implements Debugable {
             setY(nextY);
         }
 
-        // Force x and y to be inside borders of game
+        // Force x and y to be inside Pane border
         setX(Math.min(x, FlappyGhost.WIDTH - RADIUS));
         setX(Math.max(x, RADIUS));
 
