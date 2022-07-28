@@ -10,25 +10,32 @@ public class Background {
     public static final Image IMAGE = new Image(String.valueOf(FlappyGhost.class.getResource("assets/bg.png")));
 
     private final ImageView imageView1, imageView2;
-    private double x;
+    private final ParallelTransition parTransition;
 
 
     public Background() {
-        x = FlappyGhost.WIDTH;
         imageView1 = new ImageView(IMAGE);
         imageView2 = new ImageView(IMAGE);
-        imageView2.setX(x);
+
+        Duration dt = Duration.seconds(FlappyGhost.WIDTH / Ghost.INIT_SPEED);
+        TranslateTransition transition1 = new TranslateTransition(dt, imageView1);
+        TranslateTransition transition2 = new TranslateTransition(dt, imageView2);
+
+        transition1.setFromX(0);
+        transition1.setToX(-FlappyGhost.WIDTH);
+        transition1.setInterpolator(Interpolator.LINEAR);
+        transition1.setCycleCount(Animation.INDEFINITE);
+
+        transition2.setFromX(FlappyGhost.WIDTH);
+        transition2.setToX(0);
+        transition2.setInterpolator(Interpolator.LINEAR);
+        transition2.setCycleCount(Animation.INDEFINITE);
+
+        parTransition = new ParallelTransition(transition1, transition2);
     }
 
-    public void move(double dx) {
-        x -= dx;
-
-        if (x <= 0) {
-            x = FlappyGhost.WIDTH;
-        }
-
-        imageView1.setX(x - FlappyGhost.WIDTH);
-        imageView2.setX(x);
+    public void move() {
+        parTransition.play();
     }
 
     public ImageView getImageView1() {

@@ -69,6 +69,8 @@ public class Controller implements Initializable {
                 ghost.getShape(),
                 ghost.getImageView()
         );
+
+        background.move();
     }
 
     public void updatePane(double dt) {
@@ -81,8 +83,6 @@ public class Controller implements Initializable {
                 ghost.getShape(),
                 ghost.getImageView()
         );
-
-        background.move(dt * ghost.getSx());
     }
 
     @FXML
