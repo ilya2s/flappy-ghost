@@ -93,6 +93,7 @@ public class Controller implements Initializable {
 
             gamePane.getChildren().add(ghost.getShape());
             gamePane.getChildren().add(ghost.getImageView());
+            System.out.println("testing");
         }
 
         /*
