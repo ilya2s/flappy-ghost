@@ -13,7 +13,7 @@
    <bottom>
       <HBox alignment="CENTER" prefHeight="40.0" prefWidth="640.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="pauseButton" mnemonicParsing="false" onAction="#pauseButtonCLicked" text="Pause" />
+            <Button fx:id="pauseButton" mnemonicParsing="false" onAction="#pauseButtonClicked" text="Pause" />
             <Separator orientation="VERTICAL" prefHeight="200.0">
                <padding>
                   <Insets left="20.0" right="20.0" />

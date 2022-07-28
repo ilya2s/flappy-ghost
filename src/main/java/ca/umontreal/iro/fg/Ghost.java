@@ -125,5 +125,4 @@ public class Ghost implements Debugable {
     public void setSy(double speed) {
         this.sy = speed;
     }
-
 }

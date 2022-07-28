@@ -3,6 +3,7 @@ package ca.umontreal.iro.fg;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
@@ -19,6 +20,8 @@ public class Controller implements Initializable {
 
     private boolean pause;
 
+    @FXML
+    private Button pauseButton;
     @FXML
     private Pane gamePane;
     @FXML
@@ -43,9 +46,6 @@ public class Controller implements Initializable {
                 double deltaTime = (now - lastTime) * 1e-9;
 
                 updatePane(deltaTime);
-                if (ghosts[0].getSy() > 300 || ghosts[0].getSy() < -300) {
-                    System.out.println("xSpeed : " + ghosts[0].getSx() + " | ySpeed : " + ghosts[0].getSy());
-                }
 
                 lastTime = now;
             }
@@ -110,13 +110,15 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    protected void pauseButtonCLicked() {
+    protected void pauseButtonClicked() {
         gamePane.requestFocus();
 
         if (pause) {
+            pauseButton.setText("Pause");
             timer.start();
             pause = false;
         } else {
+            pauseButton.setText("Jouer");
             timer.stop();
             pause = true;
         }
