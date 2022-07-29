@@ -9,7 +9,6 @@ public class Ghost implements Debugable {
 
     public static final int RADIUS = 30;
     public static final double INIT_SPEED = 120;
-    public static final double AX = 0;
     public static final double AY = 500;    // Gravity
     public static final double JUMP_SPEED = -300;   // Negative value to go up
     public static final double MAX_Y_SPEED = 300;
@@ -46,10 +45,6 @@ public class Ghost implements Debugable {
         imageView = new ImageView(IMAGE);
         imageView.setX(x - RADIUS);
         shape.setFill(null);
-    }
-
-    public void pause() {
-
     }
 
     public void update(double dt) {

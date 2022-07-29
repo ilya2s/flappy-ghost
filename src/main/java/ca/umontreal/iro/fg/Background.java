@@ -17,6 +17,7 @@ public class Background {
         imageView1 = new ImageView(IMAGE);
         imageView2 = new ImageView(IMAGE);
 
+        // dx / sx = dt
         Duration dt = Duration.seconds(FlappyGhost.WIDTH / Ghost.INIT_SPEED);
         TranslateTransition transition1 = new TranslateTransition(dt, imageView1);
         TranslateTransition transition2 = new TranslateTransition(dt, imageView2);
@@ -36,6 +37,10 @@ public class Background {
 
     public void move() {
         parTransition.play();
+    }
+
+    public void pause() {
+        parTransition.pause();
     }
 
     public ImageView getImageView1() {

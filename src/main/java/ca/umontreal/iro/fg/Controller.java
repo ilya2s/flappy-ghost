@@ -1,12 +1,10 @@
 package ca.umontreal.iro.fg;
 
-
 import javafx.animation.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
@@ -17,12 +15,7 @@ public class Controller implements Initializable {
 
     private Background background;
 
-    private ParallelTransition parTrans;
-
     private Ghost ghost;
-
-    private AnimationTimer timer;
-
     private boolean pause;
     @FXML
     private Button pauseButton;
@@ -30,12 +23,10 @@ public class Controller implements Initializable {
     private Pane gamePane;
     @FXML
     private CheckBox debugBox;
-    @FXML
-    private Label scoreLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        timer = new AnimationTimer()  {
+        AnimationTimer timer = new AnimationTimer() {
             private long lastTime;
 
             @Override
@@ -45,8 +36,16 @@ public class Controller implements Initializable {
                 load();
             }
 
+
             @Override
             public void handle(long now) {
+
+                // If paused keep track of current time and skip calculating dt and updating pane
+                if (pause) {
+                    lastTime = now;
+                    return;
+                }
+
                 double deltaTime = (now - lastTime) * 1e-9;
 
                 updatePane(deltaTime);
@@ -91,13 +90,11 @@ public class Controller implements Initializable {
 
         if (pause) {
             pauseButton.setText("Pause");
-            timer.start();
-            parTrans.play();
+            background.move();
             pause = false;
         } else {
             pauseButton.setText("Jouer");
-            timer.stop();
-            parTrans.stop();
+            background.pause();
             pause = true;
         }
     }
@@ -108,9 +105,11 @@ public class Controller implements Initializable {
 
         if (debugBox.isSelected()) {
             ghost.startDebug();
+            updatePane(0);  // Force update the scene on action even when paused
 
         } else {
             ghost.stopDebug();
+            updatePane(0);
         }
     }
 
