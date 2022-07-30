@@ -68,6 +68,21 @@ public abstract class Obstacle implements Debugable {
 
     public abstract void update(double dt);
 
+    public static Obstacle makeObstacle() {
+        int num = (int) (Math.random() * 3) + 1;
+        switch (num) {
+            case (1) -> {
+                return new SimpleObstacle();
+            }
+            case (2) -> {
+                return new SinusObstacle();
+            }
+            default -> {
+                return new QuanticObstacle();
+            }
+        }
+    }
+
     public Circle getShape() {
         return shape;
     }

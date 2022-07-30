@@ -1,7 +1,6 @@
 package ca.umontreal.iro.fg;
 
 import ca.umontreal.iro.fg.obstacles.Obstacle;
-import javafx.scene.control.Label;
 
 public interface ScoreHandler {
 

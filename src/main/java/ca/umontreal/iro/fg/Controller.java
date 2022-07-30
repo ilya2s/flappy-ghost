@@ -1,7 +1,6 @@
 package ca.umontreal.iro.fg;
 
 import ca.umontreal.iro.fg.obstacles.Obstacle;
-import ca.umontreal.iro.fg.obstacles.SimpleObstacle;
 import javafx.animation.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -81,7 +80,8 @@ public class Controller implements Initializable {
 
         // Create now obstacle every 3 seconds
         timeline = new Timeline(new KeyFrame(Duration.seconds(3), event -> {
-            Obstacle obstacle = new SimpleObstacle();
+            Obstacle obstacle = Obstacle.makeObstacle();
+            System.out.println(obstacle);
             if (debugMode) obstacle.startDebug();   // make obstacle appear in debug mode
             obstacles.add(obstacle);
         }));
@@ -135,7 +135,8 @@ public class Controller implements Initializable {
             }
         }
 
-        obstacles.removeIf(Obstacle::isOut);    // if obstacle is out of screen remove from list
+        // if obstacle is out of screen remove from list
+        obstacles.removeIf(Obstacle::isOut);
         passedObstacles.removeIf(Obstacle::isOut);
 
         // Redraw the updated nodes on the scene
