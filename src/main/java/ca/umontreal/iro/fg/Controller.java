@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
@@ -18,11 +19,13 @@ import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
 
+    private int score = 0;
     private AnimationTimer animationTimer;
     private Timeline timeline;
     private Background background;
     private Ghost ghost;
     private List<Obstacle> obstacles;
+    private List<Obstacle> passedObstacles;
     private boolean pause;
     private boolean debugMode = false;
 
@@ -32,6 +35,9 @@ public class Controller implements Initializable {
     private Pane gamePane;
     @FXML
     private CheckBox debugBox;
+
+    @FXML
+    private Label scoreLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -66,10 +72,12 @@ public class Controller implements Initializable {
     }
 
     public void load() {
+        setScore(0);
         pause = false;
         ghost = new Ghost();
         background = new Background();
         obstacles = new ArrayList<>();
+        passedObstacles = new ArrayList<>();
 
         // Create now obstacle every 3 seconds
         timeline = new Timeline(new KeyFrame(Duration.seconds(3), event -> {
@@ -100,6 +108,12 @@ public class Controller implements Initializable {
         ghost.update(dt);
         for (Obstacle o : obstacles) {
             o.update(dt);   // update the obstacle position
+
+            ScoreHandler.handle(ghost, o);
+            if (o.isPassed() && !passedObstacles.contains(o)) {
+                setScore(++score);
+                passedObstacles.add(o);
+            }
         }
 
         // Handle collision between ghost and obstacles
@@ -112,6 +126,7 @@ public class Controller implements Initializable {
 
                 // clear all obstacles and Nodes from scene
                 obstacles.clear();
+                passedObstacles.clear();
                 gamePane.getChildren().clear();
 
                 // restart animationTimer -> calls load() method
@@ -121,6 +136,7 @@ public class Controller implements Initializable {
         }
 
         obstacles.removeIf(Obstacle::isOut);    // if obstacle is out of screen remove from list
+        passedObstacles.removeIf(Obstacle::isOut);
 
         // Redraw the updated nodes on the scene
         gamePane.getChildren().addAll(
@@ -134,6 +150,11 @@ public class Controller implements Initializable {
         }
     }
 
+    private void setScore(int score) {
+        this.score = score;
+        scoreLabel.setText("Score: " + score);
+    }
+
     @FXML
     protected void pauseButtonClicked() {
         gamePane.requestFocus();
@@ -141,10 +162,12 @@ public class Controller implements Initializable {
         if (pause) {
             pauseButton.setText("Pause");
             background.move();
+            timeline.play();
             pause = false;
         } else {
             pauseButton.setText("Jouer");
             background.pause();
+            timeline.pause();
             pause = true;
         }
     }

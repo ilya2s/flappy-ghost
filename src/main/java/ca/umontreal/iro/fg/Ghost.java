@@ -6,7 +6,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 public class Ghost implements Debugable {
-
     public static final int RADIUS = 30;
     public static final double INIT_SPEED = 120;
     public static final double AY = 500;    // Gravity
@@ -16,8 +15,9 @@ public class Ghost implements Debugable {
 
     private final Circle shape;
     private ImageView imageView;
-    private double x, y;    // position
-    private double sx, sy;  // speed
+    private final double x;
+    private double y;    // position
+    private double sy;  // speed
     private boolean debug;
 
     public Ghost() {
@@ -30,7 +30,6 @@ public class Ghost implements Debugable {
 
         resetImageView();
 
-        sx = INIT_SPEED;
         sy = 0;
     }
 
@@ -102,31 +101,9 @@ public class Ghost implements Debugable {
         return y;
     }
 
-    public double getSx() {
-        return sx;
-    }
-
-    public double getSy() {
-        return sy;
-    }
-
-    public void setX(double x) {
-        this.x = x;
-        shape.setCenterX(x);
-        imageView.setX(x - RADIUS);
-    }
-
     public void setY(double y) {
         this.y = y;
         shape.setCenterY(y);
         imageView.setY(y - RADIUS);
-    }
-
-    public void setSx(double speed) {
-        this.sx = speed;
-    }
-
-    public void setSy(double speed) {
-        this.sy = speed;
     }
 }

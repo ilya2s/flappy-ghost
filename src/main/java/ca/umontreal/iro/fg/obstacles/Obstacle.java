@@ -72,10 +72,6 @@ public abstract class Obstacle implements Debugable {
         return shape;
     }
 
-    public Image getImage() {
-        return image;
-    }
-
     public ImageView getImageView() {
         return imageView;
     }
