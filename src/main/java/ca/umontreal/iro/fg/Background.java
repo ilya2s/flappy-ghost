@@ -43,6 +43,10 @@ public class Background {
         parTransition.pause();
     }
 
+    public void stop() {
+        parTransition.stop();
+    }
+
     public ImageView getImageView1() {
         return imageView1;
     }

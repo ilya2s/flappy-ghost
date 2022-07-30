@@ -1,5 +1,7 @@
 package ca.umontreal.iro.fg;
 
+import ca.umontreal.iro.fg.obstacles.Obstacle;
+import ca.umontreal.iro.fg.obstacles.SimpleObstacle;
 import javafx.animation.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -8,15 +10,22 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
+import javafx.util.Duration;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
 
+    private AnimationTimer animationTimer;
+    private Timeline timeline;
     private Background background;
-
     private Ghost ghost;
+    private List<Obstacle> obstacles;
     private boolean pause;
+    private boolean debugMode = false;
+
     @FXML
     private Button pauseButton;
     @FXML
@@ -26,7 +35,7 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        AnimationTimer timer = new AnimationTimer() {
+        animationTimer = new AnimationTimer() {
             private long lastTime;
 
             @Override
@@ -35,7 +44,6 @@ public class Controller implements Initializable {
                 super.start();
                 load();
             }
-
 
             @Override
             public void handle(long now) {
@@ -54,34 +62,76 @@ public class Controller implements Initializable {
             }
         };
 
-        timer.start();
+        animationTimer.start();
     }
 
     public void load() {
         pause = false;
         ghost = new Ghost();
         background = new Background();
+        obstacles = new ArrayList<>();
 
+        // Create now obstacle every 3 seconds
+        timeline = new Timeline(new KeyFrame(Duration.seconds(3), event -> {
+            Obstacle obstacle = new SimpleObstacle();
+            if (debugMode) obstacle.startDebug();   // make obstacle appear in debug mode
+            obstacles.add(obstacle);
+        }));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+
+        // Update Nodes in Scene
         gamePane.getChildren().addAll(
                 background.getImageView1(),
                 background.getImageView2(),
                 ghost.getShape(),
                 ghost.getImageView()
         );
+        for (Obstacle o : obstacles) {
+            gamePane.getChildren().addAll(o.getShape(), o.getImageView());
+        }
 
-        background.move();
+        background.move();  // move background
     }
 
     public void updatePane(double dt) {
-        gamePane.getChildren().clear();
-        ghost.update(dt);
+        gamePane.getChildren().clear();     // clear the scene
 
+        ghost.update(dt);
+        for (Obstacle o : obstacles) {
+            o.update(dt);   // update the obstacle position
+        }
+
+        // Handle collision between ghost and obstacles
+        for (Obstacle o : obstacles) {
+            if(CollisionHandler.handle(ghost, o)) {
+                // stop all animations
+                animationTimer.stop();
+                background.stop();
+                timeline.stop();
+
+                // clear all obstacles and Nodes from scene
+                obstacles.clear();
+                gamePane.getChildren().clear();
+
+                // restart animationTimer -> calls load() method
+                animationTimer.start();
+                return;
+            }
+        }
+
+        obstacles.removeIf(Obstacle::isOut);    // if obstacle is out of screen remove from list
+
+        // Redraw the updated nodes on the scene
         gamePane.getChildren().addAll(
                 background.getImageView1(),
                 background.getImageView2(),
                 ghost.getShape(),
                 ghost.getImageView()
         );
+        for (Obstacle o : obstacles) {
+            gamePane.getChildren().addAll(o.getShape(), o.getImageView());
+        }
     }
 
     @FXML
@@ -104,11 +154,19 @@ public class Controller implements Initializable {
         gamePane.requestFocus();
 
         if (debugBox.isSelected()) {
+            debugMode = true;
             ghost.startDebug();
+            for (Obstacle o : obstacles) {
+                o.startDebug();
+            }
             updatePane(0);  // Force update the scene on action even when paused
 
         } else {
+            debugMode = false;
             ghost.stopDebug();
+            for (Obstacle o : obstacles) {
+                o.stopDebug();
+            }
             updatePane(0);
         }
     }

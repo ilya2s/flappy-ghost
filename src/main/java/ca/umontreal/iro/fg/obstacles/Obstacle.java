@@ -18,11 +18,14 @@ public abstract class Obstacle implements Debugable {
     protected final double radius;
     protected double x, y;
     protected boolean passed;
+    protected boolean out;
+    protected boolean debug;
 
     public Obstacle() {
+        debug = false;
         radius = Math.random() * (MAX_RADIUS - MIN_RADIUS) + MIN_RADIUS;
-         // x = FlappyGhost.WIDTH + radius;
-         x = FlappyGhost.WIDTH / 2;
+         x = FlappyGhost.WIDTH + radius;
+         // x = FlappyGhost.WIDTH / 2;
         passed = false;
         shape = new Circle(x, y, radius, null);
 
@@ -30,6 +33,10 @@ public abstract class Obstacle implements Debugable {
         image = new Image(String.valueOf(FlappyGhost.class.getResource("assets/obstacles/"
                 + obstacleNumber + ".png")));
         imageView = new ImageView(image);
+        resetImageView();
+    }
+
+    private void resetImageView() {
         imageView.setX(x - radius);
         imageView.setY(y - radius);
 
@@ -38,17 +45,28 @@ public abstract class Obstacle implements Debugable {
         imageView.setFitHeight(radius * 2);
     }
 
+    @Override
     public void startDebug() {
         imageView = new ImageView();
-        shape.setFill(Color.GREEN);
+        shape.setFill(Color.LIMEGREEN);
+        debug = true;
     }
 
+
+    @Override
     public void stopDebug() {
         imageView = new ImageView(image);
+        resetImageView();
         shape.setFill(null);
+        debug = false;
     }
 
-    public abstract void move();
+    @Override
+    public boolean isDebug() {
+        return debug;
+    }
+
+    public abstract void update(double dt);
 
     public Circle getShape() {
         return shape;
@@ -76,6 +94,10 @@ public abstract class Obstacle implements Debugable {
 
     public boolean isPassed() {
         return passed;
+    }
+
+    public boolean isOut() {
+        return out;
     }
 
     public void setX(double x) {

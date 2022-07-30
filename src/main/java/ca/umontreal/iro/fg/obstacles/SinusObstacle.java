@@ -8,7 +8,7 @@ public class SinusObstacle extends Obstacle {
         super();
         
     }
-    public void move() {
+    public void update(double dt) {
 
     }
 }

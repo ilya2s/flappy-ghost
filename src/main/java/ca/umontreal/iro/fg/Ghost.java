@@ -18,33 +18,49 @@ public class Ghost implements Debugable {
     private ImageView imageView;
     private double x, y;    // position
     private double sx, sy;  // speed
+    private boolean debug;
 
     public Ghost() {
+        debug = false;
         x = FlappyGhost.WIDTH / 2;
         y = FlappyGhost.GAME_HEIGHT / 2;
         this.shape = new Circle(x, y, RADIUS, null);
 
         imageView = new ImageView(IMAGE);
+
+        resetImageView();
+
+        sx = INIT_SPEED;
+        sy = 0;
+    }
+
+    private void resetImageView() {
         imageView.setX(x - RADIUS);
         imageView.setY(y - RADIUS);
 
         // Make the ImageView the same size as the shape
         imageView.setFitWidth(RADIUS * 2);
         imageView.setFitHeight(RADIUS * 2);
-
-        sx = INIT_SPEED;
-        sy = 0;
     }
 
+    @Override
     public void startDebug() {
         imageView = new ImageView();
         shape.setFill(Color.BLACK);
+        debug = true;
     }
 
+    @Override
     public void stopDebug() {
         imageView = new ImageView(IMAGE);
         imageView.setX(x - RADIUS);
         shape.setFill(null);
+        debug = false;
+    }
+
+    @Override
+    public boolean isDebug() {
+        return debug;
     }
 
     public void update(double dt) {
