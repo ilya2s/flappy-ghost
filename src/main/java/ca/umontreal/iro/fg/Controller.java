@@ -81,7 +81,7 @@ public class Controller implements Initializable {
         // Create now obstacle every 3 seconds
         timeline = new Timeline(new KeyFrame(Duration.seconds(3), event -> {
             Obstacle obstacle = Obstacle.makeObstacle();
-            System.out.println(obstacle);
+            //System.out.println(obstacle);
             if (debugMode) obstacle.startDebug();   // make obstacle appear in debug mode
             obstacles.add(obstacle);
         }));
