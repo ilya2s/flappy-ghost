@@ -75,13 +75,13 @@ public abstract class Obstacle implements Debugable {
         int num = (int) (Math.random() * 3) + 1;
         switch (num) {
             case (1) -> {
-                return new SimpleObstacle(ghost);
+                return new SinusObstacle(ghost);
             }
             case (2) -> {
                 return new SinusObstacle(ghost);
             }
             default -> {
-                return new QuanticObstacle(ghost);
+                return new SinusObstacle(ghost);
             }
         }
     }
