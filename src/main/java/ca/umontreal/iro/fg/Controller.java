@@ -1,34 +1,46 @@
 package ca.umontreal.iro.fg;
 
-import javafx.animation.AnimationTimer;
+import ca.umontreal.iro.fg.obstacles.Obstacle;
+import javafx.animation.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
+import javafx.util.Duration;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
 
-    private Ghost[] ghosts;
-
-    private AnimationTimer timer;
-
+    private int score = 0;
+    private AnimationTimer animationTimer;
+    private Timeline timeline;
+    private Background background;
+    private Ghost ghost;
+    private List<Obstacle> obstacles;
+    private List<Obstacle> passedObstacles;
     private boolean pause;
+    private boolean debugMode = false;
 
+    @FXML
+    private Button pauseButton;
     @FXML
     private Pane gamePane;
     @FXML
     private CheckBox debugBox;
+
     @FXML
     private Label scoreLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        timer = new AnimationTimer() {
+        animationTimer = new AnimationTimer() {
             private long lastTime;
 
             @Override
@@ -40,85 +52,123 @@ public class Controller implements Initializable {
 
             @Override
             public void handle(long now) {
+
+                // If paused keep track of current time and skip calculating dt and updating pane
+                if (pause) {
+                    lastTime = now;
+                    return;
+                }
+
                 double deltaTime = (now - lastTime) * 1e-9;
 
                 updatePane(deltaTime);
-                if (ghosts[0].getSy() > 300 || ghosts[0].getSy() < -300) {
-                    System.out.println("xSpeed : " + ghosts[0].getSx() + " | ySpeed : " + ghosts[0].getSy());
-                }
 
                 lastTime = now;
             }
         };
-        timer.start();
+
+        animationTimer.start();
     }
 
     public void load() {
+        setScore(0);
         pause = false;
-        ghosts = new Ghost[1];
+        ghost = new Ghost();
+        background = new Background();
+        obstacles = new ArrayList<>();
+        passedObstacles = new ArrayList<>();
 
-        for (int i = 0; i < ghosts.length; i++) {
-            ghosts[i] = new Ghost();
-            ghosts[i].setX(Math.random() * FlappyGhost.WIDTH);
-            ghosts[i].setY(Math.random() * FlappyGhost.GAME_HEIGHT);
+        // Create now obstacle every 3 seconds
+        timeline = new Timeline(new KeyFrame(Duration.seconds(3), event -> {
+            Obstacle obstacle = Obstacle.makeObstacle();
+            //System.out.println(obstacle);
+            if (debugMode) obstacle.startDebug();   // make obstacle appear in debug mode
+            obstacles.add(obstacle);
+        }));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
 
-            gamePane.getChildren().add(ghosts[i].getShape());
-            gamePane.getChildren().add(ghosts[i].getImageView());
-
+        // Update Nodes in Scene
+        gamePane.getChildren().addAll(
+                background.getImageView1(),
+                background.getImageView2(),
+                ghost.getShape(),
+                ghost.getImageView()
+        );
+        for (Obstacle o : obstacles) {
+            gamePane.getChildren().addAll(o.getShape(), o.getImageView());
         }
 
-        /*
-        ghost1 = new Ghost();
-        gamePane.getChildren().add(ghost1.getImageView());
-
-        ghost2 = new Ghost();
-        ghost2.setX(ghost1.getX() + Ghost.RADIUS * 4);
-        ghost2.setY(ghost1.getY() + Ghost.RADIUS * 4);
-        gamePane.getChildren().add(ghost2.getImageView());
-         */
+        background.move();  // move background
     }
 
     public void updatePane(double dt) {
+        gamePane.getChildren().clear();     // clear the scene
 
-        gamePane.getChildren().clear();
+        ghost.update(dt);
+        for (Obstacle o : obstacles) {
+            o.update(dt);   // update the obstacle position
 
-        for (int i = 0; i < ghosts.length; i++) {
-            Ghost ghost = ghosts[i];
-            ghost.update(dt);
-
-            for (int j = i + 1; j < ghosts.length; j++) {
-                Ghost other = ghosts[j];
-                CollisionHandler.handle(ghost, other);
+            ScoreHandler.handle(ghost, o);
+            if (o.isPassed() && !passedObstacles.contains(o)) {
+                setScore(++score);
+                passedObstacles.add(o);
             }
-
-            gamePane.getChildren().add(ghost.getShape());
-            gamePane.getChildren().add(ghost.getImageView());
-            System.out.println("testing");
         }
 
-        /*
-        ghost1.update(dt);
-        ghost2.update(dt);
+        // Handle collision between ghost and obstacles
+        for (Obstacle o : obstacles) {
+            if(CollisionHandler.handle(ghost, o)) {
+                // stop all animations
+                animationTimer.stop();
+                background.stop();
+                timeline.stop();
 
-        CollisionHandler.handle(ghost1, ghost2);
+                // clear all obstacles and Nodes from scene
+                obstacles.clear();
+                passedObstacles.clear();
+                gamePane.getChildren().clear();
 
-        gamePane.getChildren().clear();
-        gamePane.getChildren().add(ghost1.getShape());
-        gamePane.getChildren().add(ghost1.getImageView());
-        gamePane.getChildren().add(ghost2.getShape());
-        gamePane.getChildren().add(ghost2.getImageView());
-         */
+                // restart animationTimer -> calls load() method
+                animationTimer.start();
+                return;
+            }
+        }
+
+        // if obstacle is out of screen remove from list
+        obstacles.removeIf(Obstacle::isOut);
+        passedObstacles.removeIf(Obstacle::isOut);
+
+        // Redraw the updated nodes on the scene
+        gamePane.getChildren().addAll(
+                background.getImageView1(),
+                background.getImageView2(),
+                ghost.getShape(),
+                ghost.getImageView()
+        );
+        for (Obstacle o : obstacles) {
+            gamePane.getChildren().addAll(o.getShape(), o.getImageView());
+        }
+    }
+
+    private void setScore(int score) {
+        this.score = score;
+        scoreLabel.setText("Score: " + score);
     }
 
     @FXML
-    protected void pauseButtonCLicked() {
+    protected void pauseButtonClicked() {
         gamePane.requestFocus();
 
         if (pause) {
-            timer.start();
+            pauseButton.setText("Pause");
+            background.move();
+            timeline.play();
             pause = false;
         } else {
-            timer.stop();
+            pauseButton.setText("Jouer");
+            background.pause();
+            timeline.pause();
             pause = true;
         }
     }
@@ -128,33 +178,27 @@ public class Controller implements Initializable {
         gamePane.requestFocus();
 
         if (debugBox.isSelected()) {
-            for (Ghost ghost : ghosts) {
-                ghost.startDebug();
+            debugMode = true;
+            ghost.startDebug();
+            for (Obstacle o : obstacles) {
+                o.startDebug();
             }
-        } else {
-            for (Ghost ghost : ghosts) {
-                ghost.stopDebug();
-            }
-        }
+            updatePane(0);  // Force update the scene on action even when paused
 
-        /*
-        if (debugBox.isSelected()) {
-            ghost1.startDebug();
-            ghost2.startDebug();
         } else {
-            ghost1.stopDebug();
-            ghost2.stopDebug();
+            debugMode = false;
+            ghost.stopDebug();
+            for (Obstacle o : obstacles) {
+                o.stopDebug();
+            }
+            updatePane(0);
         }
-         */
     }
 
     @FXML
     protected void spaceBarPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.SPACE) {
-            for (Ghost ghost : ghosts) {
-                ghost.jump();
-            }
+            ghost.jump();
         }
     }
-
 }

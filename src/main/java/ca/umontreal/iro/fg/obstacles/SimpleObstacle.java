@@ -1,6 +1,7 @@
 package ca.umontreal.iro.fg.obstacles;
 
 import ca.umontreal.iro.fg.FlappyGhost;
+import ca.umontreal.iro.fg.Ghost;
 
 public class SimpleObstacle extends Obstacle {
 
@@ -13,7 +14,13 @@ public class SimpleObstacle extends Obstacle {
         setY(Math.random() * (FlappyGhost.GAME_HEIGHT - 2 * getRadius()) + getRadius());
     }
 
-    public void move() {
+    public void update(double dt) {
+        double nextX = x - dt * Ghost.INIT_SPEED;
 
+        if (nextX + radius < 0) {
+            out = true;
+        }
+
+        setX(nextX);
     }
 }
