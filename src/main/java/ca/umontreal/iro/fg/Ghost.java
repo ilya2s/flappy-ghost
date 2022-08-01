@@ -17,7 +17,7 @@ public class Ghost implements Debugable {
     private ImageView imageView;
     private final double x;
     private double y;    // position
-    private double sy;  // speed
+    private double sx, sy;  // speed
     private boolean debug;
 
     public Ghost() {
@@ -31,6 +31,7 @@ public class Ghost implements Debugable {
         resetImageView();
 
         sy = 0;
+        sx = INIT_SPEED;
     }
 
     private void resetImageView() {
@@ -99,6 +100,14 @@ public class Ghost implements Debugable {
 
     public double getY() {
         return y;
+    }
+
+    public double getSx() {
+        return sx;
+    }
+
+    public void setSx(double sx) {
+        this.sx = sx;
     }
 
     public void setY(double y) {

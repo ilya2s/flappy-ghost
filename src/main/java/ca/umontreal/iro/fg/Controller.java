@@ -25,6 +25,7 @@ public class Controller implements Initializable {
     private Ghost ghost;
     private List<Obstacle> obstacles;
     private List<Obstacle> passedObstacles;
+    private int obstacleCount = 0;
     private boolean pause;
     private boolean debugMode = false;
 
@@ -80,8 +81,7 @@ public class Controller implements Initializable {
 
         // Create now obstacle every 3 seconds
         timeline = new Timeline(new KeyFrame(Duration.seconds(3), event -> {
-            Obstacle obstacle = Obstacle.makeObstacle();
-            System.out.println(obstacle);
+            Obstacle obstacle = Obstacle.makeObstacle(ghost);
             if (debugMode) obstacle.startDebug();   // make obstacle appear in debug mode
             obstacles.add(obstacle);
         }));
@@ -113,6 +113,12 @@ public class Controller implements Initializable {
             if (o.isPassed() && !passedObstacles.contains(o)) {
                 setScore(++score);
                 passedObstacles.add(o);
+                obstacleCount++;
+                if (obstacleCount != 0 && obstacleCount % 2 == 0) {
+                    ghost.setSx(ghost.getSx() + 15);
+                    background.update();
+                    System.out.println(ghost.getSx());
+                }
             }
         }
 

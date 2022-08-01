@@ -1,12 +1,16 @@
 package ca.umontreal.iro.fg;
 
-import javafx.animation.*;
+import javafx.animation.Animation;
+import javafx.animation.Interpolator;
+import javafx.animation.ParallelTransition;
+import javafx.animation.TranslateTransition;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 
 public class Background {
 
+    public static final double ACC = 15.0;
     public static final Image IMAGE = new Image(String.valueOf(FlappyGhost.class.getResource("assets/bg.png")));
 
     private final ImageView imageView1, imageView2;
@@ -35,6 +39,10 @@ public class Background {
         parTransition = new ParallelTransition(transition1, transition2);
     }
 
+    public void update() {
+        parTransition.setRate(parTransition.getRate() + ACC / Ghost.INIT_SPEED);
+    }
+
     public void move() {
         parTransition.play();
     }
@@ -54,6 +62,4 @@ public class Background {
     public ImageView getImageView2() {
         return imageView2;
     }
-
-
 }
