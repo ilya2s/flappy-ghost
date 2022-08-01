@@ -1,7 +1,10 @@
 package ca.umontreal.iro.fg;
 
 import ca.umontreal.iro.fg.obstacles.Obstacle;
-import javafx.animation.*;
+import javafx.animation.Animation;
+import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -11,6 +14,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -123,6 +127,7 @@ public class Controller implements Initializable {
                 animationTimer.stop();
                 background.stop();
                 timeline.stop();
+                //quanticTimeline.stop();
 
                 // clear all obstacles and Nodes from scene
                 obstacles.clear();
@@ -164,11 +169,13 @@ public class Controller implements Initializable {
             pauseButton.setText("Pause");
             background.move();
             timeline.play();
+            //quanticTimeline.play();
             pause = false;
         } else {
             pauseButton.setText("Jouer");
             background.pause();
             timeline.pause();
+            //quanticTimeline.pause();
             pause = true;
         }
     }
