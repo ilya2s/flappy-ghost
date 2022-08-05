@@ -18,9 +18,9 @@ import java.io.IOException;
  */
 public class FlappyGhost extends Application {
 
-    public static final double WIDTH = 640;
-    public static final double HEIGHT = 440;
-    public static final double GAME_HEIGHT = 400;
+    public static final double WIDTH = 640;         // Width of window
+    public static final double HEIGHT = 440;        // Height of window
+    public static final double GAME_HEIGHT = 400;   // Height of view of game
 
     /**
      * To set up the 'View' window of Flappy Ghost
@@ -35,10 +35,10 @@ public class FlappyGhost extends Application {
 
         FXMLLoader fxmlLoader = new FXMLLoader(FlappyGhost.class.getResource("view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), WIDTH, HEIGHT);
-        scene.getRoot().requestFocus();
+        scene.getRoot().requestFocus();     // To avoid buttons to be selected by default
         stage.setTitle("Flappy Ghost");
         stage.setScene(scene);
-        stage.setResizable(false);
+        stage.setResizable(false);          // Not permitted to resize window
         stage.getIcons().add(new Image(String.valueOf(FlappyGhost.class.getResource("assets/ghost.png"))));
         stage.show();
 

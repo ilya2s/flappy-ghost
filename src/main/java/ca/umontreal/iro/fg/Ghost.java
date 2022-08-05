@@ -9,27 +9,27 @@ import javafx.scene.shape.Circle;
  * Controller of Ghost's movements and image
  */
 public class Ghost implements Debugable {
-    public static final int RADIUS = 30;
-    public static final double INIT_SPEED = 120;
-    public static final double AY = 500;    // Gravity
-    public static final double JUMP_SPEED = -300;   // Negative value to go up
-    public static final double MAX_Y_SPEED = 300;
-    public static final Image IMAGE = new Image(String.valueOf(Ghost.class.getResource("assets/ghost.png")));
-    private ImageView imageView;
-    private final Circle shape;
-    private final double x;
-    private double y;    // position
-    private double sx, sy;  // speed
-    private double ay;  // variable gravity
-
-    private boolean debug;
+    public static final int RADIUS = 30;                // Radius of ghost
+    public static final double INIT_SPEED = 120;        // Initial speed of ghost in x-axis
+    public static final double AY = 500;                // Gravity of ghost in y-axis
+    public static final double JUMP_SPEED = -300;       // Negative value to go up
+    public static final double MAX_Y_SPEED = 300;       // Keep maximum speed
+    public static final Image IMAGE = new Image(        // Load image of ghost in png
+            String.valueOf(Ghost.class.getResource("assets/ghost.png")));
+    private ImageView imageView;                        // To display image of ghost
+    private final Circle shape;                         // To set ghost as circle in debug mode
+    private final double x;                             // No change in ghost position in x-axis
+    private double y;                                   // Ghost position in y-axis
+    private double sx, sy;                              // Ghost speed in x and y-axis
+    private double ay;                                  // Accumulation of gravity in y-axis
+    private boolean debug;                              // Keep track of debug mode
 
     /**
-     * To instantiate Ghost
+     * To instantiate Ghost in the center with initial speed when game begins
      */
     public Ghost() {
         debug = false;
-        x = FlappyGhost.WIDTH / 2;
+        x = FlappyGhost.WIDTH / 2;                      // Centering ghost
         y = FlappyGhost.GAME_HEIGHT / 2;
         this.shape = new Circle(x, y, RADIUS, null);
 
@@ -56,17 +56,18 @@ public class Ghost implements Debugable {
     }
 
     /**
-     * Turn the ghost into black if debug mode is on
+     * Turn the ghost into black circle if debug mode is ON
      */
     @Override
     public void startDebug() {
-        imageView = new ImageView();         // Empty the image, otherwise it will appear on the black circle
+        // Empty the image, otherwise it will appear on the black circle
+        imageView = new ImageView();
         shape.setFill(Color.BLACK);
         debug = true;
     }
 
     /**
-     * Return the ghost to normal if debug mode is off
+     * Return the ghost to normal if debug mode is OFF
      */
     @Override
     public void stopDebug() {
@@ -105,66 +106,69 @@ public class Ghost implements Debugable {
             setY(nextY);
         }
 
+        // Prevent from exiting the border in y-axis
         setY(Math.min(y, FlappyGhost.GAME_HEIGHT - RADIUS));
         setY(Math.max(y, RADIUS));
     }
 
-
     /**
-     * Reset the speed to jump back up
+     * To accelerate ghost for every 2 obstacles
      */
     public void accelerate() {
         sx += 15;
         ay += 15;
     }
 
+    /**
+     * Reset the speed to jump back up
+     */
     public void jump() {
         sy = JUMP_SPEED;
     }
 
     /**
-     * Getter pour la shape
-     * @return Circle le cercle qui represente le ghost
+     * Getter for object Circle of Ghost
+     * @return : Circle representing Ghost
      */
     public Circle getShape() {
         return shape;
     }
 
     /**
-     * Getter pour ImageView
-     * @return ImageView l'image qui represente le ghost
+     * Getter for ImageView of Ghost
+     * @return : ImageView representing Ghost
      */
     public ImageView getImageView() {
         return imageView;
     }
 
     /**
-     * Getter pour la position x
-     * @return double la postion x
+     * Getter for position x
+     * @return : position x in double
      */
     public double getX() {
         return x;
     }
 
     /**
-     * Getter pour la position y
-     * @return double la position y
+     * Getter for position y
+     * @return : position y in double
      */
     public double getY() {
         return y;
     }
 
     /**
-     * Getter pour la vitesse x
-     * @return sx
+     * Getter for speed in x
+     * @return : speed in x in double
      */
     public double getSx() {
         return sx;
     }
 
     /**
-     * Setter pour la position y
-     * @param y la nouvelle position
+     * Setter for position y
+     * @param y : position y in double
      */
     public void setY(double y) {
         this.y = y;

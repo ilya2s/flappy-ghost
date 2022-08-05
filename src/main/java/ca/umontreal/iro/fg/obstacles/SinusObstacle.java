@@ -1,14 +1,24 @@
+/**
+ * Auteurs: Ilyass El Ouazzani && Trinh Ngo
+ */
 package ca.umontreal.iro.fg.obstacles;
 
 import ca.umontreal.iro.fg.FlappyGhost;
 import ca.umontreal.iro.fg.Ghost;
 
+/**
+ * To oscillate obstacle with an amplitude of 50 px
+ */
 public class SinusObstacle extends Obstacle {
 
-    public static final int SIN = 50;
-    private final double oldY;
-    private double sy;
+    public static final int SIN = 50;           // Amplitude of the sine wave of the obstacle
+    private final double oldY;                  // To keep track of the position y during oscillation
+    private double sy;                          // Speed of obstacle in position y
 
+    /**
+     * Constructor to instantiate and arbitrarily set obstacle in position y
+     * @param ghost : to keep track of speed of ghost
+     */
     public SinusObstacle(Ghost ghost) {
         super(ghost);
 
@@ -20,24 +30,30 @@ public class SinusObstacle extends Obstacle {
         oldY = y;
     }
 
+    /**
+     * To update the position X of the obstacle at a given time
+     * @param dt : deltaTime in double
+     */
     public void update(double dt) {
         double nextX = x - dt * ghost.getSx();
-        sy += Math.sin(Ghost.INIT_SPEED) * SIN * dt;
 
+        sy += Math.sin(Ghost.INIT_SPEED) * SIN * dt;
         double nextY =  y + dt * sy;
 
-        if ((Math.abs(nextY - oldY) > SIN * 2) || (nextY + radius > FlappyGhost.GAME_HEIGHT) || (nextY - radius < 0)) {
+        // Control oscillation of an amplitude of 50 px
+        if (( Math.abs(nextY - oldY) > SIN ) || (nextY + radius > FlappyGhost.GAME_HEIGHT) || (nextY - radius < 0)) {
             sy *= -1;
         } else {
             setY(nextY);
         }
 
+        // If obstacle exited the window
         if (nextX + radius < 0) {
             out = true;
         }
 
         setX(nextX);
-        setY(Math.min(getY(), FlappyGhost.GAME_HEIGHT - radius));
+        setY(Math.min(getY(), FlappyGhost.GAME_HEIGHT - radius));       // Keep obstacle from out of border
         setY(Math.max(getY(), radius));
     }
 }

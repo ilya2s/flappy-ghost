@@ -27,32 +27,40 @@ import java.util.ResourceBundle;
  */
 public class Controller implements Initializable {
 
-    private int score = 0;
-    private AnimationTimer animationTimer;
-    private Timeline timeline;
-    private Background background;
-    private Ghost ghost;
-    private List<Obstacle> obstacles;
-    private List<Obstacle> passedObstacles;
-    private int obstacleCount = 0;
-    private boolean pause;
-    private boolean debugMode = false;
+    private int score = 0;                      // Initial score when game starts
+    private AnimationTimer animationTimer;      // Create timer for each frame
+    private Timeline timeline;                  // To create 3 seconds timeframe for obstacles
+    private Background background;              // background Object to set up background of game
+    private Ghost ghost;                        // ghost Object to set up ghost
+    private List<Obstacle> obstacles;           // List of obstacles to add in game
+    private List<Obstacle> passedObstacles;     // List of obstacles exited the window
+    private int obstacleCount = 0;              // Keep track of every 2 obstacles to accelerate
+    private boolean pause;                      // Keep track of when game is paused
+    private boolean debugMode = false;          // Start game without debug mode ON
 
     @FXML
-    private Button pauseButton;
+    private Button pauseButton;                 // Pause button
     @FXML
-    private Pane gamePane;
+    private Pane gamePane;                      // Layout Pane of game
     @FXML
-    private CheckBox debugBox;
+    private CheckBox debugBox;                  // CheckBox for debug mode
 
     @FXML
-    private Label scoreLabel;
+    private Label scoreLabel;                   // Label for score
 
+    /**
+     * To initialize the attributs and load the game window
+     * @param url Location
+     * @param resourceBundle Resources
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         animationTimer = new AnimationTimer() {
             private long lastTime;
 
+            /**
+             * Load the game
+             */
             @Override
             public void start() {
                 lastTime = System.nanoTime();
@@ -60,10 +68,17 @@ public class Controller implements Initializable {
                 load();
             }
 
+            /**
+             * Keep track of time when paused to resume from current position
+             * @param now
+             *            The timestamp of the current frame given in nanoseconds. This
+             *            value will be the same for all {@code AnimationTimers} called
+             *            during one frame.
+             */
             @Override
             public void handle(long now) {
 
-                // If paused keep track of current time and skip calculating dt and updating pane
+                // If paused, keep track of current time, skip calculating dt and updating pane
                 if (pause) {
                     lastTime = now;
                     return;
@@ -91,11 +106,14 @@ public class Controller implements Initializable {
         obstacles = new ArrayList<>();
         passedObstacles = new ArrayList<>();
 
-        // Create now obstacle every 3 seconds
+        // Create obstacle every 3 seconds
         timeline = new Timeline(new KeyFrame(Duration.seconds(3), event -> {
             Obstacle obstacle = Obstacle.makeObstacle(ghost);
-            if (debugMode) obstacle.startDebug();   // make obstacle appear in debug mode
+
+            // Make obstacle appear in debug mode
+            if (debugMode) obstacle.startDebug();
             obstacles.add(obstacle);
+
         }));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
@@ -112,7 +130,8 @@ public class Controller implements Initializable {
             gamePane.getChildren().addAll(o.getShape(), o.getImageView());
         }
 
-        background.move();  // move background
+        // Move background
+        background.move();
     }
 
     /**
@@ -120,18 +139,25 @@ public class Controller implements Initializable {
      * @param dt : Time in double
      */
     public void updatePane(double dt) {
-        gamePane.getChildren().clear();     // Clear the scene
 
-        ghost.update(dt);   // Update the ghost position
+        // Clear the scene
+        gamePane.getChildren().clear();
+
+        // Update the ghost position
+        ghost.update(dt);
         for (Obstacle o : obstacles) {
-            o.update(dt);   // Update the obstacle position
 
-            // Update the score if the ghost passed the obstacle
+            // Update the obstacle position
+            o.update(dt);
+
+            // Update the score if ghost passed the obstacle
             ScoreHandler.handle(ghost, o);
             if (o.isPassed() && !passedObstacles.contains(o)) {
                 setScore(score + 5);
                 passedObstacles.add(o);
                 obstacleCount++;
+
+                // Accelerate ghost for every 2 obstacles
                 if (obstacleCount != 0 && obstacleCount % 2 == 0) {
                     ghost.accelerate();
                     background.update();
@@ -142,6 +168,7 @@ public class Controller implements Initializable {
         // Handle collision between ghost and obstacles
         for (Obstacle o : obstacles) {
             if(CollisionHandler.handle(ghost, o)) {
+
                 // Stop all animations
                 animationTimer.stop();
                 background.stop();
@@ -185,7 +212,7 @@ public class Controller implements Initializable {
     }
 
     /**
-     * To pause the background and the pane when activated
+     * To pause the background and pane, if pause button clicked
      */
     @FXML
     protected void pauseButtonClicked() {
@@ -201,6 +228,7 @@ public class Controller implements Initializable {
                 }
             }
             pause = false;
+
         } else {
             pauseButton.setText("Resume");
             background.pause();
@@ -228,7 +256,9 @@ public class Controller implements Initializable {
             for (Obstacle o : obstacles) {
                 o.startDebug();
             }
-            updatePane(0);  // Force to update the scene on action even when paused
+            
+            // Force to update the scene on action even when paused
+            updatePane(0);
 
         } else {
             debugMode = false;
