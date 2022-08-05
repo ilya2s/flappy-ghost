@@ -8,8 +8,8 @@ public class QuanticObstacle extends Obstacle {
     private static final double PERIOD = 0.2;
     private static final double RANGE = 30;
 
-    public QuanticObstacle(Ghost ghost) {
-        super(ghost);
+    public QuanticObstacle() {
+        super();
 
         /* if Math.random() gives 0 -> we add the radius to not be outside the top of the scene
         if Math.random() gives 1 -> we substract the radius to not be outside the bottom of the Pane
