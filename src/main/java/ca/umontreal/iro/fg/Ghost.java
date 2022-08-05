@@ -5,6 +5,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
+/**
+ * Controller of Ghost's movements and image
+ */
 public class Ghost implements Debugable {
     public static final int RADIUS = 30;
     public static final double INIT_SPEED = 120;
@@ -12,14 +15,16 @@ public class Ghost implements Debugable {
     public static final double JUMP_SPEED = -300;   // Negative value to go up
     public static final double MAX_Y_SPEED = 300;
     public static final Image IMAGE = new Image(String.valueOf(Ghost.class.getResource("assets/ghost.png")));
-
-    private final Circle shape;
     private ImageView imageView;
+    private final Circle shape;
     private final double x;
     private double y;    // position
-    private double sy;  // speed
+    private double sy;   // speed
     private boolean debug;
 
+    /**
+     * To instantiate Ghost
+     */
     public Ghost() {
         debug = false;
         x = FlappyGhost.WIDTH / 2;
@@ -33,6 +38,9 @@ public class Ghost implements Debugable {
         sy = 0;
     }
 
+    /**
+     * Set the ghost image to the center
+     */
     private void resetImageView() {
         imageView.setX(x - RADIUS);
         imageView.setY(y - RADIUS);
@@ -42,26 +50,40 @@ public class Ghost implements Debugable {
         imageView.setFitHeight(RADIUS * 2);
     }
 
+    /**
+     * Turn the ghost into black if debug mode is on
+     */
     @Override
     public void startDebug() {
-        imageView = new ImageView();
+        imageView = new ImageView();         // Empty the image, otherwise it will appear on the black circle
         shape.setFill(Color.BLACK);
         debug = true;
     }
 
+    /**
+     * Return the ghost to normal if debug mode is off
+     */
     @Override
     public void stopDebug() {
-        imageView = new ImageView(IMAGE);
+        imageView = new ImageView(IMAGE);    // Fill the imageView to the ghost image
         imageView.setX(x - RADIUS);
-        shape.setFill(null);
+        shape.setFill(null);                 // Remove the black circle
         debug = false;
     }
 
+    /**
+     * Getter for boolean of Debug mode
+     * @return
+     */
     @Override
     public boolean isDebug() {
         return debug;
     }
 
+    /**
+     * To update the Ghost position at a given time
+     * @param dt : Time in double
+     */
     public void update(double dt) {
         sy += dt * AY;
 
@@ -71,6 +93,7 @@ public class Ghost implements Debugable {
 
         double nextY = y + dt * sy;
 
+        // If the ghost reaches the border of window, it moves in the opposite direction for the bounce back effect
         if (nextY + RADIUS > FlappyGhost.GAME_HEIGHT || nextY - RADIUS < 0) {
             sy *= -1;
         } else {
@@ -81,26 +104,49 @@ public class Ghost implements Debugable {
         setY(Math.max(y, RADIUS));
     }
 
+    /**
+     * Reset the speed to jump back up
+     */
     public void jump() {
         sy = JUMP_SPEED;
     }
 
+    /**
+     * Getter
+     * @return
+     */
     public Circle getShape() {
         return shape;
     }
 
+    /**
+     * Getter pour ImageView
+     * @return
+     */
     public ImageView getImageView() {
         return imageView;
     }
 
+    /**
+     * Getter pour la position x
+     * @return
+     */
     public double getX() {
         return x;
     }
 
+    /**
+     * Getter pour la position y
+     * @return
+     */
     public double getY() {
         return y;
     }
 
+    /**
+     * Setter pour la position y
+     * @param y : double
+     */
     public void setY(double y) {
         this.y = y;
         shape.setCenterY(y);

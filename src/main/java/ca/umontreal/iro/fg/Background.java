@@ -5,12 +5,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 
+/*
+Class to set up the background
+ */
 public class Background {
 
     public static final Image IMAGE = new Image(String.valueOf(FlappyGhost.class.getResource("assets/bg.png")));
-
-    private final ImageView imageView1, imageView2;
-    private final ParallelTransition parTransition;
+    private final ImageView imageView1, imageView2; // Instantiate two images for loop effect
+    private final ParallelTransition parTransition; // Class to make the loop
 
 
     public Background() {
@@ -22,6 +24,7 @@ public class Background {
         TranslateTransition transition1 = new TranslateTransition(dt, imageView1);
         TranslateTransition transition2 = new TranslateTransition(dt, imageView2);
 
+        // Heading to the left
         transition1.setFromX(0);
         transition1.setToX(-FlappyGhost.WIDTH);
         transition1.setInterpolator(Interpolator.LINEAR);

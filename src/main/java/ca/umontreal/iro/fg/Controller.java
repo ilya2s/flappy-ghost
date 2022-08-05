@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Controller of Flappy Ghost
+ */
 public class Controller implements Initializable {
 
     private int score = 0;
@@ -74,6 +77,9 @@ public class Controller implements Initializable {
         animationTimer.start();
     }
 
+    /**
+     * To instantiate the attributs
+     */
     public void load() {
         setScore(0);
         pause = false;
@@ -85,7 +91,6 @@ public class Controller implements Initializable {
         // Create now obstacle every 3 seconds
         timeline = new Timeline(new KeyFrame(Duration.seconds(3), event -> {
             Obstacle obstacle = Obstacle.makeObstacle();
-            //System.out.println(obstacle);
             if (debugMode) obstacle.startDebug();   // make obstacle appear in debug mode
             obstacles.add(obstacle);
         }));
@@ -99,6 +104,7 @@ public class Controller implements Initializable {
                 ghost.getShape(),
                 ghost.getImageView()
         );
+
         for (Obstacle o : obstacles) {
             gamePane.getChildren().addAll(o.getShape(), o.getImageView());
         }
@@ -106,13 +112,18 @@ public class Controller implements Initializable {
         background.move();  // move background
     }
 
+    /**
+     * To update the pane at a given time
+     * @param dt : Time in double
+     */
     public void updatePane(double dt) {
-        gamePane.getChildren().clear();     // clear the scene
+        gamePane.getChildren().clear();     // Clear the scene
 
-        ghost.update(dt);
+        ghost.update(dt);   // Update the ghost position
         for (Obstacle o : obstacles) {
-            o.update(dt);   // update the obstacle position
+            o.update(dt);   // Update the obstacle position
 
+            // Update the score if the ghost passed the obstacle
             ScoreHandler.handle(ghost, o);
             if (o.isPassed() && !passedObstacles.contains(o)) {
                 setScore(++score);
@@ -123,24 +134,24 @@ public class Controller implements Initializable {
         // Handle collision between ghost and obstacles
         for (Obstacle o : obstacles) {
             if(CollisionHandler.handle(ghost, o)) {
-                // stop all animations
+                // Stop all animations
                 animationTimer.stop();
                 background.stop();
                 timeline.stop();
-                //quanticTimeline.stop();
+                //quanticTimeline.stop();//////////////////////DELETE?////////////////
 
-                // clear all obstacles and Nodes from scene
+                // Clear all obstacles and Nodes from scene
                 obstacles.clear();
                 passedObstacles.clear();
                 gamePane.getChildren().clear();
 
-                // restart animationTimer -> calls load() method
+                // Restart animationTimer -> calls load() method
                 animationTimer.start();
                 return;
             }
         }
 
-        // if obstacle is out of screen remove from list
+        // If obstacle is out of screen, remove from list
         obstacles.removeIf(Obstacle::isOut);
         passedObstacles.removeIf(Obstacle::isOut);
 
@@ -151,16 +162,24 @@ public class Controller implements Initializable {
                 ghost.getShape(),
                 ghost.getImageView()
         );
+
         for (Obstacle o : obstacles) {
             gamePane.getChildren().addAll(o.getShape(), o.getImageView());
         }
     }
 
+    /**
+     * Score setter
+     * @param score : integer
+     */
     private void setScore(int score) {
         this.score = score;
         scoreLabel.setText("Score: " + score);
     }
 
+    /**
+     * To pause the background and the pane when activated
+     */
     @FXML
     protected void pauseButtonClicked() {
         gamePane.requestFocus();
@@ -175,22 +194,26 @@ public class Controller implements Initializable {
             pauseButton.setText("Jouer");
             background.pause();
             timeline.pause();
-            //quanticTimeline.pause();
+            //quanticTimeline.pause(); //////////////////////     DELETE?   //////////////////////////////////////
             pause = true;
         }
     }
 
+    /**
+     * Events if debug Box is checked
+     */
     @FXML
     protected void debugBoxChecked() {
         gamePane.requestFocus();
 
+        // Turn ghost and obstacles into circles if debug mode is checked
         if (debugBox.isSelected()) {
             debugMode = true;
             ghost.startDebug();
             for (Obstacle o : obstacles) {
                 o.startDebug();
             }
-            updatePane(0);  // Force update the scene on action even when paused
+            updatePane(0);  // Force to update the scene on action even when paused
 
         } else {
             debugMode = false;
@@ -202,6 +225,10 @@ public class Controller implements Initializable {
         }
     }
 
+    /**
+     * To make the ghost jump when the spacebar is pressed
+     * @param event : KeyEvent
+     */
     @FXML
     protected void spaceBarPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.SPACE) {

@@ -52,11 +52,11 @@ public class QuanticObstacle extends Obstacle {
         if ( rangeY < 30 ) {
             nextY = rangeY;
             //imageView.setImage(null);
-            //setY( (oldY - rangeY) );
+            setY( (oldY - rangeY) );
             //imageView.setImage(image);
         } else if (rangeY >= 30) {
             nextY = rangeY;
-            //setY( oldY + rangeY );
+            setY( oldY + rangeY );
         }
 
 

@@ -5,6 +5,9 @@ import ca.umontreal.iro.fg.obstacles.Obstacle;
 import static javafx.scene.paint.Color.LIMEGREEN;
 import static javafx.scene.paint.Color.RED;
 
+/*
+To detect the collision between the Ghost and the obstacles
+ */
 public interface CollisionHandler {
 
     private static boolean intersects(Ghost ghost, Obstacle obstacle) {
@@ -19,6 +22,7 @@ public interface CollisionHandler {
         boolean intersects = CollisionHandler.intersects(ghost, obstacle);
         boolean debug = obstacle.isDebug();
 
+        // To detect collision even during debug mode
         if (intersects && debug) {
             obstacle.getShape().setFill(RED);
             return false;
