@@ -78,10 +78,10 @@ public abstract class Obstacle implements Debugable {
                 return new SinusObstacle(ghost);
             }
             case (2) -> {
-                return new SinusObstacle(ghost);
+                return new QuanticObstacle(ghost);
             }
             default -> {
-                return new SinusObstacle(ghost);
+                return new SimpleObstacle(ghost);
             }
         }
     }
