@@ -6,6 +6,7 @@ import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -247,6 +248,8 @@ public class Controller implements Initializable {
     protected void spaceBarPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.SPACE) {
             ghost.jump();
+        } else if (event.getCode() == KeyCode.ESCAPE) {
+            Platform.exit();
         }
     }
 }
