@@ -6,7 +6,7 @@ import ca.umontreal.iro.fg.Ghost;
 public class SinusObstacle extends Obstacle {
 
     public static final int SIN = 50;
-    public double oldY = 0;
+    public double oldY;
     public double sy;
 
     public SinusObstacle() {
