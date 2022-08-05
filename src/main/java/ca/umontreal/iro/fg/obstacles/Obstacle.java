@@ -23,7 +23,7 @@ public abstract class Obstacle implements Debugable {
     protected boolean out;
     protected boolean debug;
 
-    public Obstacle() {
+    public Obstacle(Ghost ghost) {
         this.ghost = ghost;
         debug = false;
         radius = Math.random() * (MAX_RADIUS - MIN_RADIUS) + MIN_RADIUS;
@@ -71,17 +71,17 @@ public abstract class Obstacle implements Debugable {
 
     public abstract void update(double dt);
 
-    public static Obstacle makeObstacle() {
+    public static Obstacle makeObstacle(Ghost ghost) {
         int num = (int) (Math.random() * 3) + 1;
         switch (num) {
             case (1) -> {
-                return new SinusObstacle();
+                return new SinusObstacle(ghost);
             }
             case (2) -> {
-                return new QuanticObstacle();
+                return new QuanticObstacle(ghost);
             }
             default -> {
-                return new SimpleObstacle();
+                return new SimpleObstacle(ghost);
             }
         }
     }

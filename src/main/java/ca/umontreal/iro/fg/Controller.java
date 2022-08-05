@@ -1,7 +1,10 @@
 package ca.umontreal.iro.fg;
 
 import ca.umontreal.iro.fg.obstacles.Obstacle;
-import javafx.animation.*;
+import javafx.animation.Animation;
+import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -81,7 +84,7 @@ public class Controller implements Initializable {
 
         // Create now obstacle every 3 seconds
         timeline = new Timeline(new KeyFrame(Duration.seconds(3), event -> {
-            Obstacle obstacle = Obstacle.makeObstacle();
+            Obstacle obstacle = Obstacle.makeObstacle(ghost);
             if (debugMode) obstacle.startDebug();   // make obstacle appear in debug mode
             obstacles.add(obstacle);
         }));
@@ -111,13 +114,12 @@ public class Controller implements Initializable {
 
             ScoreHandler.handle(ghost, o);
             if (o.isPassed() && !passedObstacles.contains(o)) {
-                setScore(++score);
+                setScore(score + 5);
                 passedObstacles.add(o);
                 obstacleCount++;
                 if (obstacleCount != 0 && obstacleCount % 2 == 0) {
-                    ghost.setSx(ghost.getSx() + 15);
+                    ghost.accelerate();
                     background.update();
-                    System.out.println(ghost.getSx());
                 }
             }
         }

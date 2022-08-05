@@ -12,8 +12,8 @@ public class QuanticObstacle extends Obstacle {
     private static final double PERIOD = 0.2;
     private static final double RANGE = 30;
 
-    public QuanticObstacle() {
-        super();
+    public QuanticObstacle(Ghost ghost) {
+        super(ghost);
 
         setY(Math.random() * (FlappyGhost.GAME_HEIGHT - 2 * getRadius()) + getRadius());
 
@@ -35,7 +35,7 @@ public class QuanticObstacle extends Obstacle {
     }
 
     public void update(double dt) {
-        double nextX = x - dt * Ghost.INIT_SPEED;
+        double nextX = x - dt * ghost.getSx();
 
         if (nextX + radius + RANGE < 0) {
             out = true;

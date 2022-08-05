@@ -18,6 +18,7 @@ public class Ghost implements Debugable {
     private final double x;
     private double y;    // position
     private double sx, sy;  // speed
+    private double ay;  // variable gravity
     private boolean debug;
 
     public Ghost() {
@@ -32,6 +33,8 @@ public class Ghost implements Debugable {
 
         sy = 0;
         sx = INIT_SPEED;
+
+        ay = AY;
     }
 
     private void resetImageView() {
@@ -64,7 +67,7 @@ public class Ghost implements Debugable {
     }
 
     public void update(double dt) {
-        sy += dt * AY;
+        sy += dt * ay;
 
         // Set max Y speed
         if (sy > MAX_Y_SPEED) sy = MAX_Y_SPEED;
@@ -80,6 +83,11 @@ public class Ghost implements Debugable {
 
         setY(Math.min(y, FlappyGhost.GAME_HEIGHT - RADIUS));
         setY(Math.max(y, RADIUS));
+    }
+
+    public void accelerate() {
+        sx += 15;
+        ay += 15;
     }
 
     public void jump() {
@@ -104,10 +112,6 @@ public class Ghost implements Debugable {
 
     public double getSx() {
         return sx;
-    }
-
-    public void setSx(double sx) {
-        this.sx = sx;
     }
 
     public void setY(double y) {
