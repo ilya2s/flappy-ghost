@@ -2,6 +2,10 @@ package ca.umontreal.iro.fg.obstacles;
 
 import ca.umontreal.iro.fg.FlappyGhost;
 import ca.umontreal.iro.fg.Ghost;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 
 public class QuanticObstacle extends Obstacle {
 
@@ -11,16 +15,29 @@ public class QuanticObstacle extends Obstacle {
     public QuanticObstacle() {
         super();
 
-        /* if Math.random() gives 0 -> we add the radius to not be outside the top of the scene
-        if Math.random() gives 1 -> we substract the radius to not be outside the bottom of the Pane
-         */
         setY(Math.random() * (FlappyGhost.GAME_HEIGHT - 2 * getRadius()) + getRadius());
+
+        Timeline quanticTimeline = new Timeline(new KeyFrame(Duration.seconds(PERIOD), event -> {
+            double rangeX = (Math.random() * 60);
+            rangeX = rangeX < 30 ? rangeX : 30 - rangeX;
+
+            double rangeY = (Math.random() * 60);
+            rangeY = rangeY < 30 ? rangeY : 30 - rangeY;
+
+            setX(x - rangeX);
+            setY(y - rangeY);
+
+            setY(Math.min(y, FlappyGhost.GAME_HEIGHT - radius));
+            setY(Math.max(y, radius));
+        }));
+        quanticTimeline.setCycleCount(Animation.INDEFINITE);
+        quanticTimeline.play();
     }
 
     public void update(double dt) {
-        double nextX = x - dt * ghost.getSx();
+        double nextX = x - dt * Ghost.INIT_SPEED;
 
-        if (nextX + radius < 0) {
+        if (nextX + radius + RANGE < 0) {
             out = true;
         }
 
