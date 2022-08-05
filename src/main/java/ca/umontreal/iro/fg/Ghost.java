@@ -19,7 +19,9 @@ public class Ghost implements Debugable {
     private final Circle shape;
     private final double x;
     private double y;    // position
-    private double sy;   // speed
+    private double sx, sy;  // speed
+    private double ay;  // variable gravity
+
     private boolean debug;
 
     /**
@@ -36,6 +38,9 @@ public class Ghost implements Debugable {
         resetImageView();
 
         sy = 0;
+        sx = INIT_SPEED;
+
+        ay = AY;
     }
 
     /**
@@ -73,7 +78,7 @@ public class Ghost implements Debugable {
 
     /**
      * Getter for boolean of Debug mode
-     * @return
+     * @return boolean si on est en mode debug
      */
     @Override
     public boolean isDebug() {
@@ -85,7 +90,7 @@ public class Ghost implements Debugable {
      * @param dt : Time in double
      */
     public void update(double dt) {
-        sy += dt * AY;
+        sy += dt * ay;
 
         // Set max Y speed
         if (sy > MAX_Y_SPEED) sy = MAX_Y_SPEED;
@@ -104,16 +109,22 @@ public class Ghost implements Debugable {
         setY(Math.max(y, RADIUS));
     }
 
+
     /**
      * Reset the speed to jump back up
      */
+    public void accelerate() {
+        sx += 15;
+        ay += 15;
+    }
+
     public void jump() {
         sy = JUMP_SPEED;
     }
 
     /**
-     * Getter
-     * @return
+     * Getter pour la shape
+     * @return Circle le cercle qui represente le ghost
      */
     public Circle getShape() {
         return shape;
@@ -121,7 +132,7 @@ public class Ghost implements Debugable {
 
     /**
      * Getter pour ImageView
-     * @return
+     * @return ImageView l'image qui represente le ghost
      */
     public ImageView getImageView() {
         return imageView;
@@ -129,7 +140,7 @@ public class Ghost implements Debugable {
 
     /**
      * Getter pour la position x
-     * @return
+     * @return double la postion x
      */
     public double getX() {
         return x;
@@ -137,15 +148,23 @@ public class Ghost implements Debugable {
 
     /**
      * Getter pour la position y
-     * @return
+     * @return double la position y
      */
     public double getY() {
         return y;
     }
 
     /**
+     * Getter pour la vitesse x
+     * @return sx
+     */
+    public double getSx() {
+        return sx;
+    }
+
+    /**
      * Setter pour la position y
-     * @param y : double
+     * @param y la nouvelle position
      */
     public void setY(double y) {
         this.y = y;

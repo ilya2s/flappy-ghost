@@ -2,6 +2,7 @@ package ca.umontreal.iro.fg.obstacles;
 
 import ca.umontreal.iro.fg.Debugable;
 import ca.umontreal.iro.fg.FlappyGhost;
+import ca.umontreal.iro.fg.Ghost;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -16,12 +17,14 @@ public abstract class Obstacle implements Debugable {
     protected final Image image;
     protected ImageView imageView;
     protected final double radius;
+    protected Ghost ghost;
     protected double x, y;
     protected boolean passed;
     protected boolean out;
     protected boolean debug;
 
-    public Obstacle() {
+    public Obstacle(Ghost ghost) {
+        this.ghost = ghost;
         debug = false;
         radius = Math.random() * (MAX_RADIUS - MIN_RADIUS) + MIN_RADIUS;
          x = FlappyGhost.WIDTH + radius;
@@ -68,22 +71,19 @@ public abstract class Obstacle implements Debugable {
 
     public abstract void update(double dt);
 
-    public static Obstacle makeObstacle() {
+    public static Obstacle makeObstacle(Ghost ghost) {
         int num = (int) (Math.random() * 3) + 1;
-        /*
         switch (num) {
             case (1) -> {
-                return new SimpleObstacle();
+                return new SinusObstacle(ghost);
             }
             case (2) -> {
-                return new SinusObstacle();
+                return new QuanticObstacle(ghost);
             }
             default -> {
-                return new QuanticObstacle();
+                return new SimpleObstacle(ghost);
             }
         }
-         */
-        return new QuanticObstacle();
     }
 
     public Circle getShape() {

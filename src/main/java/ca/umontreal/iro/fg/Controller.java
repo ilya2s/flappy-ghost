@@ -32,6 +32,7 @@ public class Controller implements Initializable {
     private Ghost ghost;
     private List<Obstacle> obstacles;
     private List<Obstacle> passedObstacles;
+    private int obstacleCount = 0;
     private boolean pause;
     private boolean debugMode = false;
 
@@ -90,7 +91,7 @@ public class Controller implements Initializable {
 
         // Create now obstacle every 3 seconds
         timeline = new Timeline(new KeyFrame(Duration.seconds(3), event -> {
-            Obstacle obstacle = Obstacle.makeObstacle();
+            Obstacle obstacle = Obstacle.makeObstacle(ghost);
             if (debugMode) obstacle.startDebug();   // make obstacle appear in debug mode
             obstacles.add(obstacle);
         }));
@@ -126,8 +127,13 @@ public class Controller implements Initializable {
             // Update the score if the ghost passed the obstacle
             ScoreHandler.handle(ghost, o);
             if (o.isPassed() && !passedObstacles.contains(o)) {
-                setScore(++score);
+                setScore(score + 5);
                 passedObstacles.add(o);
+                obstacleCount++;
+                if (obstacleCount != 0 && obstacleCount % 2 == 0) {
+                    ghost.accelerate();
+                    background.update();
+                }
             }
         }
 
@@ -138,7 +144,6 @@ public class Controller implements Initializable {
                 animationTimer.stop();
                 background.stop();
                 timeline.stop();
-                //quanticTimeline.stop();//////////////////////DELETE?////////////////
 
                 // Clear all obstacles and Nodes from scene
                 obstacles.clear();
@@ -188,13 +193,11 @@ public class Controller implements Initializable {
             pauseButton.setText("Pause");
             background.move();
             timeline.play();
-            //quanticTimeline.play();
             pause = false;
         } else {
             pauseButton.setText("Jouer");
             background.pause();
             timeline.pause();
-            //quanticTimeline.pause(); //////////////////////     DELETE?   //////////////////////////////////////
             pause = true;
         }
     }
