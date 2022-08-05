@@ -12,7 +12,7 @@ public class QuanticObstacle extends Obstacle {
     private static final double PERIOD = 0.2;
     private static final double RANGE = 30;
 
-    private Timeline quanticTimeline;
+    private final Timeline quanticTimeline;
 
     public QuanticObstacle(Ghost ghost) {
         super(ghost);

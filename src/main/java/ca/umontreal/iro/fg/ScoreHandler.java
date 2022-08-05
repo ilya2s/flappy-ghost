@@ -9,9 +9,9 @@ public interface ScoreHandler {
 
     /**
      * To notify if the ghost has passed the obstacle
-     * @param ghost
-     * @param obstacle
-     * @return
+     * @param ghost !!!!!!!!!!!!!!!!!!!!!!!!!!1
+     * @param obstacle !!!!!!!!!!!!!!!!!
+     * @return !!!!!!!!!!!!!!!!!!!!!!!
      */
     private static boolean pass(Ghost ghost, Obstacle obstacle) {
         return (ghost.getX() - Ghost.RADIUS) > (obstacle.getX() + obstacle.getRadius());
