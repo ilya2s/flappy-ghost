@@ -1,49 +1,39 @@
 package ca.umontreal.iro.fg;
 
+import ca.umontreal.iro.fg.obstacles.Obstacle;
+
+import static javafx.scene.paint.Color.LIMEGREEN;
+import static javafx.scene.paint.Color.RED;
+
+/*
+To detect the collision between the Ghost and the obstacles
+ */
 public interface CollisionHandler {
 
-    private static boolean intersects(Ghost ghost, Ghost other) {
-        double dx = ghost.getX() - other.getX();
-        double dy = ghost.getY() - other.getY();
+    private static boolean intersects(Ghost ghost, Obstacle obstacle) {
+        double dx = ghost.getX() - obstacle.getX();
+        double dy = ghost.getY() - obstacle.getY();
         double dSquare = dx * dx + dy * dy;
 
-        return dSquare < (Ghost.RADIUS + Ghost.RADIUS) * (Ghost.RADIUS + Ghost.RADIUS);
+        return dSquare < (Ghost.RADIUS + Ghost.RADIUS) * (obstacle.getRadius() + obstacle.getRadius());
     }
 
-    static void handle(Ghost ghost, Ghost other) {
-        if (CollisionHandler.intersects(ghost, other)) {
-            double sx = ghost.getSx();
-            double sy = ghost.getSy();
+    static boolean handle(Ghost ghost, Obstacle obstacle) {
+        boolean intersects = CollisionHandler.intersects(ghost, obstacle);
+        boolean debug = obstacle.isDebug();
 
-            ghost.setSx(other.getSx());
-            ghost.setSy(other.getSy());
-
-            other.setSx(sx);
-            other.setSy(sy);
-
-            // Overlaping distance between the center of the two elements
-            double dx = other.getX() - ghost.getX();
-            double dy = other.getY() - ghost.getY();
-            double d2 = dx * dx + dy * dy;
-            double d = Math.sqrt(d2);
-
-            // Overlap in pixels
-            double overlap = d - (Ghost.RADIUS + Ghost.RADIUS);
-
-            // Direction of movement
-            double directionX = dx / d;
-            double directionY = dy / d;
-
-            // movement
-            double moveX = directionX * overlap / 2;
-            double moveY = directionY * overlap / 2;
-
-            // force move elements away from eachother
-            ghost.setX(ghost.getX() + moveX);
-            ghost.setY(ghost.getY() + moveY);
-            other.setX(other.getX() - moveX);
-            other.setY(other.getY() - moveY);
-
+        // To detect collision even during debug mode
+        if (intersects && debug) {
+            obstacle.getShape().setFill(RED);
+            return false;
+        } else if (intersects) {
+            return true;
+        } else if (debug) {
+            obstacle.getShape().setFill(LIMEGREEN);
+            return false;
+        } else {
+            return false;
         }
     }
 }
+
