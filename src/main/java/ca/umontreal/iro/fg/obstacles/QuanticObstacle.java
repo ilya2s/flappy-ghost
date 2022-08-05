@@ -12,12 +12,14 @@ public class QuanticObstacle extends Obstacle {
     private static final double PERIOD = 0.2;
     private static final double RANGE = 30;
 
+    private Timeline quanticTimeline;
+
     public QuanticObstacle(Ghost ghost) {
         super(ghost);
 
         setY(Math.random() * (FlappyGhost.GAME_HEIGHT - 2 * getRadius()) + getRadius());
 
-        Timeline quanticTimeline = new Timeline(new KeyFrame(Duration.seconds(PERIOD), event -> {
+        quanticTimeline = new Timeline(new KeyFrame(Duration.seconds(PERIOD), event -> {
             double rangeX = (Math.random() * 60);
             rangeX = rangeX < 30 ? rangeX : 30 - rangeX;
 
@@ -42,5 +44,9 @@ public class QuanticObstacle extends Obstacle {
         }
 
         setX(nextX);
+    }
+
+    public Timeline getQuanticTimeline() {
+        return quanticTimeline;
     }
 }

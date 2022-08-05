@@ -1,6 +1,7 @@
 package ca.umontreal.iro.fg;
 
 import ca.umontreal.iro.fg.obstacles.Obstacle;
+import ca.umontreal.iro.fg.obstacles.QuanticObstacle;
 import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
@@ -193,11 +194,21 @@ public class Controller implements Initializable {
             pauseButton.setText("Pause");
             background.move();
             timeline.play();
+            for (Obstacle o : obstacles) {
+                if (o instanceof QuanticObstacle) {
+                    ((QuanticObstacle) o).getQuanticTimeline().play();
+                }
+            }
             pause = false;
         } else {
-            pauseButton.setText("Jouer");
+            pauseButton.setText("Resume");
             background.pause();
             timeline.pause();
+            for (Obstacle o : obstacles) {
+                if (o instanceof QuanticObstacle) {
+                    ((QuanticObstacle) o).getQuanticTimeline().pause();
+                }
+            }
             pause = true;
         }
     }
