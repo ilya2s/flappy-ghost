@@ -2,8 +2,7 @@ package ca.umontreal.iro.fg;
 
 import ca.umontreal.iro.fg.obstacles.Obstacle;
 
-import static javafx.scene.paint.Color.LIMEGREEN;
-import static javafx.scene.paint.Color.RED;
+import static javafx.scene.paint.Color.*;
 
 /*
 To detect the collision between the Ghost and the obstacles
@@ -29,7 +28,7 @@ public interface CollisionHandler {
         } else if (intersects) {
             return true;
         } else if (debug) {
-            obstacle.getShape().setFill(LIMEGREEN);
+            obstacle.getShape().setFill(YELLOW);
             return false;
         } else {
             return false;

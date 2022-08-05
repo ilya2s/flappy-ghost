@@ -28,7 +28,6 @@ public abstract class Obstacle implements Debugable {
         debug = false;
         radius = Math.random() * (MAX_RADIUS - MIN_RADIUS) + MIN_RADIUS;
          x = FlappyGhost.WIDTH + radius;
-         // x = FlappyGhost.WIDTH / 2;
         passed = false;
         shape = new Circle(x, y, radius, null);
 
@@ -51,7 +50,7 @@ public abstract class Obstacle implements Debugable {
     @Override
     public void startDebug() {
         imageView = new ImageView();
-        shape.setFill(Color.LIMEGREEN);
+        shape.setFill(Color.YELLOW);
         debug = true;
     }
 

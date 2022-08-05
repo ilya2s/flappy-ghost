@@ -1,3 +1,8 @@
+/**
+ *
+ * Auteurs : Ilyass El Ouazzani && Trinh Ngo
+ *
+ */
 package ca.umontreal.iro.fg;
 
 import javafx.application.Application;
