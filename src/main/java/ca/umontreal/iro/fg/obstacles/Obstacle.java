@@ -70,6 +70,7 @@ public abstract class Obstacle implements Debugable {
 
     public static Obstacle makeObstacle() {
         int num = (int) (Math.random() * 3) + 1;
+        System.out.println(num);
         switch (num) {
             case (1) -> {
                 return new SimpleObstacle();
